@@ -6,13 +6,13 @@
              xmlns:local="clr-namespace:Wulkanizacja.User.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="20">
+    <Grid Margin="20" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Logowanie" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+        <TextBlock Foreground="DarkGray"  Text="Logowanie" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,20"/>
         <StackPanel Grid.Row="1" Orientation="Vertical">
             <TextBox Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" 
                      Width="200" Margin="5" 

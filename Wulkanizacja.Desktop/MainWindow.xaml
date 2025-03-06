@@ -7,7 +7,7 @@
         WindowState="Maximized"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
+    <Grid Background="#252526">
                <StackPanel>
             <ContentControl Content="{Binding CurrentViewModel}" />
         </StackPanel>
