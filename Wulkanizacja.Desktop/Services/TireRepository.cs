@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Wulkanizacja.Desktop.Enums;
@@ -21,6 +22,11 @@ namespace Wulkanizacja.Desktop.Services
         {
             var encodedSize = Uri.EscapeDataString(size);
             return await _client.GetDataAsync<IEnumerable<TireModel>>($"tires/size/{encodedSize}/TireType/{(int)tireType}");
+        }
+
+        public async Task<HttpResponseMessage> DeleteTireAsync(Guid guid)
+        {
+            return await _client.DeleteDataAsync($"tires/{guid}/removeTire");
         }
     }
 }

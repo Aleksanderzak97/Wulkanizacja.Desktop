@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Windows.Media;
 using Wulkanizacja.Desktop.Dictionary;
 using Wulkanizacja.Desktop.Enums;
 using Wulkanizacja.Desktop.Models;
@@ -19,6 +20,7 @@ namespace Wulkanizacja.User.ViewModels
         private TireType _selectedTireType;
         private string _selectedTranslatedTireType;
         private readonly Dictionary<string, TireType> _translatedToOriginalTireTypeMap;
+        private TireModel _selectedTireModel;
 
 
         public ObservableCollection<TireModel> TireModels
@@ -65,9 +67,21 @@ namespace Wulkanizacja.User.ViewModels
             }
         }
 
+        public TireModel SelectedTireModel
+        {
+            get => _selectedTireModel;
+            set
+            {
+                _selectedTireModel = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ObservableCollection<TireType> TireTypes { get; }
         public ObservableCollection<string> TranslatedTireTypes { get; private set; }
+        public ICommand AddCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand DeleteCommand { get; }
 
         public GeneralViewModel(WebServiceClient webServiceClient, TireRepository tireRepository)
         {
@@ -79,7 +93,9 @@ namespace Wulkanizacja.User.ViewModels
             _translatedToOriginalTireTypeMap = TireTypes.ToDictionary(t => TranslateTireType(t), t => t);
             TranslatedTireTypes = new ObservableCollection<string>(_translatedToOriginalTireTypeMap.Keys);
 
+            AddCommand = new RelayCommand(Add);
             SearchCommand = new RelayCommand(Search);
+            DeleteCommand = new RelayCommand(Delete);
         }
         private string TranslateTireType(TireType tireType)
         {
@@ -87,11 +103,21 @@ namespace Wulkanizacja.User.ViewModels
             return TranslationDictionary.Translate(tireType, languageCode);
         }
 
-        private async Task LoadDataAsync(string size, int type)
+
+        private async void Add(object parameter)
         {
-            var encodedSize = Uri.EscapeDataString(size);
-            var data = await _tireRepository.GetTireModelsAsync(size, (TireType)type);
-            TireModels = new ObservableCollection<TireModel>(data);
+            if (parameter is GeneralViewModel viewModel)
+            {
+                var searchParameters = new SearchParameters
+                {
+                    Size = viewModel.Size,
+                    Type = (int)viewModel.SelectedTireType
+                };
+                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
+                var data = await _tireRepository.GetTireModelsAsync(searchParameters.Size, (TireType)searchParameters.Type);
+                if (data != null)
+                    TireModels = new ObservableCollection<TireModel>(data);
+            }
         }
 
         private async void Search(object parameter)
@@ -103,7 +129,28 @@ namespace Wulkanizacja.User.ViewModels
                     Size = viewModel.Size,
                     Type = (int)viewModel.SelectedTireType
                 };
-               await LoadDataAsync(searchParameters.Size, searchParameters.Type);
+                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
+                var data = await _tireRepository.GetTireModelsAsync(searchParameters.Size, (TireType)searchParameters.Type);
+                if (data != null)
+                    TireModels = new ObservableCollection<TireModel>(data);
+            }
+        }
+
+        private async void Delete(object parameter)
+        {
+            if (parameter is TireModel tireModel)
+            {
+                var Question = await DialogService.ShowQuestionDialogAsync("Pytanie", "Czy na pewno chcesz usunąć oponę?");
+                if (Question)
+                {
+                var Guid = tireModel.Id;
+                var delete = await _tireRepository.DeleteTireAsync(Guid);
+                if (delete.IsSuccessStatusCode)
+                {
+                    TireModels.Remove(tireModel);
+                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została usunięta pomyślnie");
+                    }
+                }
             }
         }
 
