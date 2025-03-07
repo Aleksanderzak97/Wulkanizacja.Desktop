@@ -23,4 +23,33 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = App.Current.ServiceProvider.GetRequiredService<MainWindowViewModel>();
     }
+    private void MinimizeWindow_Click(object sender, RoutedEventArgs e)
+    {
+        WindowState = WindowState.Minimized;
+    }
+
+    private void MaximizeWindow_Click(object sender, RoutedEventArgs e)
+    {
+        if (WindowState == WindowState.Maximized)
+        {
+            WindowState = WindowState.Normal;
+        }
+        else
+        {
+            WindowState = WindowState.Maximized;
+        }
+    }
+
+    private void CloseWindow_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+    {
+        if (e.ChangedButton == MouseButton.Left)
+        {
+            DragMove();
+        }
+    }
 }

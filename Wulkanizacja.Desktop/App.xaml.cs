@@ -63,6 +63,7 @@ public partial class App : Application
         });
 
         services.AddSingleton<WebServiceClient>();
+        services.AddSingleton<TireRepository>();
 
     }
 }

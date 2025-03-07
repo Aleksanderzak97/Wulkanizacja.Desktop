@@ -1,7 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Wulkanizacja.Desktop.Dictionary;
+using Wulkanizacja.Desktop.Enums;
 using Wulkanizacja.Desktop.Models;
 using Wulkanizacja.Desktop.Services;
 
@@ -10,8 +13,14 @@ namespace Wulkanizacja.User.ViewModels
     public class GeneralViewModel : INotifyPropertyChanged
     {
         private readonly WebServiceClient _webServiceClient;
-
+        private readonly TireRepository _tireRepository;
         private ObservableCollection<TireModel> _tireModels;
+        private string _size;
+        private TireType _selectedTireType;
+        private string _selectedTranslatedTireType;
+        private readonly Dictionary<string, TireType> _translatedToOriginalTireTypeMap;
+
+
         public ObservableCollection<TireModel> TireModels
         {
             get => _tireModels;
@@ -22,28 +31,80 @@ namespace Wulkanizacja.User.ViewModels
             }
         }
 
-        public ICommand SearchCommand { get; }
-
-        public GeneralViewModel(WebServiceClient webServiceClient)
+        public string Size
         {
-            _webServiceClient = webServiceClient;
-            TireModels = new ObservableCollection<TireModel>();
-            SearchCommand = new RelayCommand(Search);
-            
-            LoadData("205/55 R16", 1);
+            get => _size;
+            set
+            {
+                _size = value;
+                OnPropertyChanged();
+            }
         }
 
-   
-        private async void LoadData(string size, int type)
+        public TireType SelectedTireType
+        {
+            get => _selectedTireType;
+            set
+            {
+                _selectedTireType = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string SelectedTranslatedTireType
+        {
+            get => _selectedTranslatedTireType;
+            set
+            {
+                _selectedTranslatedTireType = value;
+                if (_translatedToOriginalTireTypeMap.TryGetValue(value, out var originalTireType))
+                {
+                    SelectedTireType = originalTireType;
+                }
+                OnPropertyChanged();
+            }
+        }
+
+        public ObservableCollection<TireType> TireTypes { get; }
+        public ObservableCollection<string> TranslatedTireTypes { get; private set; }
+        public ICommand SearchCommand { get; }
+
+        public GeneralViewModel(WebServiceClient webServiceClient, TireRepository tireRepository)
+        {
+            _webServiceClient = webServiceClient;
+            _tireRepository = tireRepository;
+
+            TireModels = new ObservableCollection<TireModel>();
+            TireTypes = new ObservableCollection<TireType>(Enum.GetValues(typeof(TireType)).Cast<TireType>());
+            _translatedToOriginalTireTypeMap = TireTypes.ToDictionary(t => TranslateTireType(t), t => t);
+            TranslatedTireTypes = new ObservableCollection<string>(_translatedToOriginalTireTypeMap.Keys);
+
+            SearchCommand = new RelayCommand(Search);
+        }
+        private string TranslateTireType(TireType tireType)
+        {
+            string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            return TranslationDictionary.Translate(tireType, languageCode);
+        }
+
+        private async Task LoadDataAsync(string size, int type)
         {
             var encodedSize = Uri.EscapeDataString(size);
-            var data = await _webServiceClient.GetDataAsync<IEnumerable<TireModel>>($"tires/size/{encodedSize}/TireType/{type}");
+            var data = await _tireRepository.GetTireModelsAsync(size, (TireType)type);
             TireModels = new ObservableCollection<TireModel>(data);
         }
 
-        private void Search(object parameter)
+        private async void Search(object parameter)
         {
-            // Logika wyszukiwania
+            if (parameter is GeneralViewModel viewModel)
+            {
+                var searchParameters = new SearchParameters
+                {
+                    Size = viewModel.Size,
+                    Type = (int)viewModel.SelectedTireType
+                };
+               await LoadDataAsync(searchParameters.Size, searchParameters.Type);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -51,11 +112,5 @@ namespace Wulkanizacja.User.ViewModels
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
-    }
-
-    public class Item
-    {
-        public string Property1 { get; set; }
-        public string Property2 { get; set; }
     }
 }

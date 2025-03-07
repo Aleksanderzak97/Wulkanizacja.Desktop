@@ -20,10 +20,18 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
+            <Label Content="Podaj Rozmiar" Width="200" Margin="5" Foreground="White" HorizontalContentAlignment="Center"/>
+            <Label Content="Sezon"  Width="200" Margin="5" Foreground="White" HorizontalContentAlignment="Center"/>
+        </StackPanel>
+
         <!-- Search Panel -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
-            <TextBox Width="200" Margin="5"/>
-            <Button Content="Search" Margin="5"/>
+            <TextBox Width="200" Margin="5" Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"/>
+            <ComboBox Width="200" Margin="5" ItemsSource="{Binding TranslatedTireTypes}" SelectedItem="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}">
+            </ComboBox>
+            <Button Content="Search" Margin="5" Command="{Binding SearchCommand}" CommandParameter="{Binding}">
+            </Button>
         </StackPanel>
 
         <!-- List -->
