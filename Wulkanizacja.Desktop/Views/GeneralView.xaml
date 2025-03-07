@@ -16,26 +16,86 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <!-- Panel filtrów -->
             <RowDefinition Height="Auto"/>
+            <!-- Duże przyciski -->
             <RowDefinition Height="*"/>
+            <!-- Lista -->
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5">
-            <Label Content="Podaj Rozmiar" Width="200" Margin="5" Foreground="White" HorizontalContentAlignment="Center"/>
-            <Label Content="Sezon"  Width="200" Margin="5" Foreground="White" HorizontalContentAlignment="Center"/>
+        <!-- PANEL FILTRÓW -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
+            <Label Content="Podaj rozmiar opony"></Label>
+            <TextBox Width="200" Margin="5" 
+                     Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Label Content="Wybierz typ opony"></Label>
+            <ComboBox Width="200" Margin="5"
+                      ItemsSource="{Binding TranslatedTireTypes}"
+                      SelectedItem="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}"
+                      Style="{StaticResource DarkComboBoxStyle}" />
+
+            <Button Content="Wyszukaj" Margin="5" 
+                    Command="{Binding SearchCommand}" 
+                    CommandParameter="{Binding}"/>
         </StackPanel>
 
-        <!-- Search Panel -->
-        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
-            <TextBox Width="200" Margin="5" Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"/>
-            <ComboBox Width="200" Margin="5" ItemsSource="{Binding TranslatedTireTypes}" SelectedItem="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource DarkComboBoxStyle}">
-            </ComboBox>
-            <Button Content="Wyszukaj" Margin="5" Command="{Binding SearchCommand}" CommandParameter="{Binding}"/>
-            <Button Content="Dodaj" Margin="5" Command="{Binding AddCommand}" CommandParameter="{Binding}"/>
-            <Button Content="Usuń" Margin="5" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedTireModel}"/>
+        <!-- DUŻE PRZYCISKI (Dodaj i Usuń) -->
+        <Grid Grid.Row="0" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
+            <!-- Przycisk "Dodaj" -->
+            <Button Grid.Column="0"
+                    Background="#4CAF50" Foreground="White"
+                    Width="100" Height="100" Margin="5"
+                    Command="{Binding AddCommand}" 
+                    CommandParameter="{Binding}"
+                    HorizontalAlignment="Right"
+                    >
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" 
+                               Text="&#xE109;"
+                               FontSize="50" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Dodaj" FontSize="20"/>
+                </StackPanel>
+            </Button>
 
+            <!-- Przycisk "Edytuj" -->
+            <Button Grid.Column="1"
+            Background="#2196F3" Foreground="White"
+            Width="100" Height="100" Margin="5"
+            Command="{Binding EditCommand}" 
+            CommandParameter="{Binding SelectedTireModel}">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                       Text="&#xE104;"
+                       FontSize="50"
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="Edytuj" FontSize="20"/>
         </StackPanel>
+            </Button>
+
+            <!-- Przycisk "Usuń" -->
+            <Button Grid.Column="2"
+                    Background="#F44336" Foreground="White"
+                    Width="100" Height="100" Margin="5"
+                    Command="{Binding DeleteCommand}" 
+                    CommandParameter="{Binding SelectedTireModel}"
+                    HorizontalAlignment="Left">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock FontFamily="Segoe MDL2 Assets" 
+                               Text="&#xE108;" 
+                               FontSize="50"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Usuń" FontSize="20"/>
+                </StackPanel>
+            </Button>
+        </Grid>
 
         <!-- List -->
         <ListView Grid.Row="2" Margin="5" ItemsSource="{Binding TireModels}" SelectedItem="{Binding SelectedTireModel, Mode=TwoWay}" Background="DarkGray" HorizontalContentAlignment="Center">

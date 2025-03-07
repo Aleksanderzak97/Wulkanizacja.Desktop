@@ -29,6 +29,7 @@
                       VerticalScrollBarVisibility="Auto">
             <TextBlock x:Name="BodyText"
                        VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
                        Opacity="0.8"
                        FontSize="20"
                        TextWrapping="Wrap" />
