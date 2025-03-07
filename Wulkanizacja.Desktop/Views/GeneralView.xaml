@@ -4,8 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Wulkanizacja.User.Views"
+             xmlns:converters="clr-namespace:Wulkanizacja.Desktop.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <converters:DateTimeOffsetToMonthYearConverter x:Key="DateTimeOffsetToMonthYearConverter"/>
+        <converters:LoadIndexToIndexWithLoadConverter x:Key="LoadIndexToIndexWithLoadConverter"/>
+        <converters:SpeedIndexToIndexWithSpeedConverter x:Key="SpeedIndexToIndexWithSpeedConverter"/>
+        <converters:TireTypeToLocalizedStringConverter x:Key="TireTypeToLocalizedStringConverter"/>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,18 +27,71 @@
         </StackPanel>
 
         <!-- List -->
-        <ListView Grid.Row="2" Margin="5" ItemsSource="{Binding Items}" Background="DarkGray">
+        <ListView Grid.Row="2" Margin="5" ItemsSource="{Binding TireModels}" Background="DarkGray" HorizontalContentAlignment="Center">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Marka" DisplayMemberBinding="{Binding Property1}" Width="Auto"/>
-                    <GridViewColumn Header="Model" DisplayMemberBinding="{Binding Property2}" Width="Auto"/>
-                    <GridViewColumn Header="Rozmiar" Width="Auto"/>
-                    <GridViewColumn Header="Sezon" Width="Auto"/>
-                    <GridViewColumn Header="Nośność" Width="Auto"/>
-                    <GridViewColumn Header="Indeks prędkości" Width="Auto"/>
-                    <GridViewColumn Header="Indeks nośności" Width="Auto"/>
-                    <GridViewColumn Header="Rok produkcji" Width="Auto"/>
-                    <GridViewColumn Header="Ilość sztuk" Width="Auto"/>
+                    <GridViewColumn Header="Marka" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Brand}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Model" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Model}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Rozmiar" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Size}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Sezon" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TireType, Converter={StaticResource TireTypeToLocalizedStringConverter}}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Indeks prędkości" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SpeedIndex, Converter={StaticResource SpeedIndexToIndexWithSpeedConverter}}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Indeks nośności" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LoadIndex, Converter={StaticResource LoadIndexToIndexWithLoadConverter}}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Rok produkcji" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ManufactureDate, Converter={StaticResource DateTimeOffsetToMonthYearConverter}}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Ilość sztuk" Width="150">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding QuantityInStock}" TextAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

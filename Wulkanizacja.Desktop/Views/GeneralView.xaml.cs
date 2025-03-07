@@ -24,7 +24,6 @@ namespace Wulkanizacja.User.Views
         public GeneralView()
         {
             InitializeComponent();
-            DataContext = new GeneralViewModel();
         }
     }
 }

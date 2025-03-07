@@ -2,35 +2,43 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Wulkanizacja.Desktop.Models;
+using Wulkanizacja.Desktop.Services;
 
 namespace Wulkanizacja.User.ViewModels
 {
     public class GeneralViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Item> _items;
-        public ObservableCollection<Item> Items
+        private readonly WebServiceClient _webServiceClient;
+
+        private ObservableCollection<TireModel> _tireModels;
+        public ObservableCollection<TireModel> TireModels
         {
-            get => _items;
+            get => _tireModels;
             set
             {
-                _items = value;
+                _tireModels = value;
                 OnPropertyChanged();
             }
         }
 
         public ICommand SearchCommand { get; }
 
-        public GeneralViewModel()
+        public GeneralViewModel(WebServiceClient webServiceClient)
         {
-            Items = new ObservableCollection<Item>();
+            _webServiceClient = webServiceClient;
+            TireModels = new ObservableCollection<TireModel>();
             SearchCommand = new RelayCommand(Search);
-            LoadItems();
+            
+            LoadData("205/55 R16", 1);
         }
 
-        private void LoadItems()
+   
+        private async void LoadData(string size, int type)
         {
-            Items.Add(new Item { Property1 = "Value1", Property2 = "Value2" });
-            Items.Add(new Item { Property1 = "Value3", Property2 = "Value4" });
+            var encodedSize = Uri.EscapeDataString(size);
+            var data = await _webServiceClient.GetDataAsync<IEnumerable<TireModel>>($"tires/size/{encodedSize}/TireType/{type}");
+            TireModels = new ObservableCollection<TireModel>(data);
         }
 
         private void Search(object parameter)
