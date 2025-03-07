@@ -5,14 +5,19 @@
              xmlns:vm="clr-namespace:Wulkanizacja.User.ViewModels"
              xmlns:views="clr-namespace:Wulkanizacja.User.Views">
     <Application.Resources>
-        <DataTemplate DataType="{x:Type vm:LoginViewModel}">
-            <views:LoginView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
-            <views:GeneralView />
-        </DataTemplate>
-        <DataTemplate DataType="{x:Type vm:ContentControlViewModel}">
-            <views:ContentControl />
-        </DataTemplate>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/DarkTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <DataTemplate DataType="{x:Type vm:LoginViewModel}">
+                <views:LoginView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:GeneralViewModel}">
+                <views:GeneralView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ContentControlViewModel}">
+                <views:ContentControl />
+            </DataTemplate>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

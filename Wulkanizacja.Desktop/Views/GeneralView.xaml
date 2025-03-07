@@ -28,10 +28,10 @@
         <!-- Search Panel -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="5">
             <TextBox Width="200" Margin="5" Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"/>
-            <ComboBox Width="200" Margin="5" ItemsSource="{Binding TranslatedTireTypes}" SelectedItem="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}">
+            <ComboBox Width="200" Margin="5" ItemsSource="{Binding TranslatedTireTypes}" SelectedItem="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}"  Style="{StaticResource DarkComboBoxStyle}">
             </ComboBox>
             <Button Content="Wyszukaj" Margin="5" Command="{Binding SearchCommand}" CommandParameter="{Binding}"/>
-            <Button Content="Dodaj" Margin="5" Command="{Binding AddCommand}"/>
+            <Button Content="Dodaj" Margin="5" Command="{Binding AddCommand}" CommandParameter="{Binding}"/>
             <Button Content="Usuń" Margin="5" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedTireModel}"/>
 
 

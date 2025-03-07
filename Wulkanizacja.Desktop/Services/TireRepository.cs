@@ -17,8 +17,13 @@ namespace Wulkanizacja.Desktop.Services
         {
             _client = client;
         }
+        public async Task<HttpResponseMessage> AddTireAsync(TireModel tireModel)
+        {
+            var tireRequest = new TireRequest { Tire = tireModel };
+            return await _client.PostDataAsync("tires", tireRequest);
+        }
 
-        public async Task<IEnumerable<TireModel>> GetTireModelsAsync(string size, TireType tireType)
+        public async Task<IEnumerable<TireModel>> GetTireAsync(string size, TireType tireType)
         {
             var encodedSize = Uri.EscapeDataString(size);
             return await _client.GetDataAsync<IEnumerable<TireModel>>($"tires/size/{encodedSize}/TireType/{(int)tireType}");

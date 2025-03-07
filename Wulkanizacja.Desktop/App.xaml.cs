@@ -22,7 +22,7 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-
+        SwitchToDarkTheme();
         //pobieranie jezyka z systemu
         var systemLanguage = CultureInfo.InstalledUICulture.Name; 
         var culture = new CultureInfo(systemLanguage);
@@ -65,6 +65,18 @@ public partial class App : Application
         services.AddSingleton<WebServiceClient>();
         services.AddSingleton<TireRepository>();
 
+    }
+
+    private void SwitchToDarkTheme()
+    {
+        // Załaduj ResourceDictionary z ciemnym motywem
+        var darkTheme = new ResourceDictionary
+        {
+            Source = new Uri("Themes/DarkTheme.xaml", UriKind.RelativeOrAbsolute)
+        };
+
+        // Dodaj do kolekcji MergedDictionaries w Application lub w konkretnym Window
+        Application.Current.Resources.MergedDictionaries.Add(darkTheme);
     }
 }
 

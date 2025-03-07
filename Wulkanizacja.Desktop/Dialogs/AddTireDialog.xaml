@@ -5,8 +5,179 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
         mc:Ignorable="d"
-        Title="AddTireDialog" Height="450" Width="800">
-    <Grid>
-        
+        Style="{StaticResource {x:Type Window}}"
+        Title="Dodawanie Opony" 
+        Height="450" Width="800">
+
+    <Grid Margin="25">
+        <!-- Główne wiersze: tytuł (auto), środkowy (rozciągliwy), przyciski (auto) -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tytuł okna -->
+        <TextBlock x:Name="Title"
+                   Grid.Row="0"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Margin="0,0,0,10"
+                   TextWrapping="Wrap"
+                   Text="DODAWANIE OPONY"/>
+
+        <!-- Główna część formularza w ScrollViewer, by zachować przewijanie przy małych ekranach -->
+        <ScrollViewer Grid.Row="1"
+                      VerticalAlignment="Stretch"
+                      BorderBrush="Transparent"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+
+            <!-- Grid z dwiema kolumnami: lewa na etykiety, prawa na pola -->
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Każdy wiersz na kolejne pole -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- 1. Marka -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 2. Model -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 3. Rozmiar -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 4. Indeks prędkości -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 5. Indeks nośności -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 6. Typ opony -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 7. Data produkcji -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 8. Komentarze -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 9. Ilość w magazynie -->
+                </Grid.RowDefinitions>
+
+                <!-- 1. Marka -->
+                <Label Grid.Row="0" Grid.Column="0"
+                       Content="Marka"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="BrandTextBox"
+                         Grid.Row="0" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding Brand, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 2. Model -->
+                <Label Grid.Row="1" Grid.Column="0"
+                       Content="Model"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="ModelTextBox"
+                         Grid.Row="1" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding Model, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 3. Rozmiar -->
+                <Label Grid.Row="2" Grid.Column="0"
+                       Content="Rozmiar - format (205/65 R18)"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="SizeTextBox"
+                         Grid.Row="2" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 4. Indeks prędkości -->
+                <Label Grid.Row="3" Grid.Column="0"
+                       Content="Indeks prędkości"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="SpeedIndexTextBox"
+                         Grid.Row="3" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding SpeedIndex, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 5. Indeks nośności -->
+                <Label Grid.Row="4" Grid.Column="0"
+                       Content="Indeks nośności"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="LoadIndexTextBox"
+                         Grid.Row="4" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding LoadIndex, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 6. Typ opony (ComboBox) -->
+                <Label Grid.Row="5" Grid.Column="0"
+                       Content="Typ opony"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <ComboBox x:Name="TireTypeComboBox"
+                          Grid.Row="5" Grid.Column="1"
+                          Margin="5"
+                          SelectedValuePath="Tag"
+                          SelectedValue="{Binding TireType, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedIndex="0"
+                          Style="{StaticResource DarkComboBoxStyle}">
+                    <ComboBoxItem Content="-- Wybierz rodzaj opony --" Tag="0"/>
+                    <ComboBoxItem Content="Letnia" Tag="1"/>
+                    <ComboBoxItem Content="Zimowa" Tag="2"/>
+                    <ComboBoxItem Content="Całoroczna" Tag="3"/>
+                </ComboBox>
+
+                <!-- 7. Data Produkcji -->
+                <Label Grid.Row="6" Grid.Column="0"
+                       Content="Data Produkcji - format (5224)"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="ManufactureWeekYearTextBox"
+                         Grid.Row="6" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding ManufactureWeekYear, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 8. Komentarze -->
+                <Label Grid.Row="7" Grid.Column="0"
+                       Content="Komentarze"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="CommentsTextBox"
+                         Grid.Row="7" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding Comments, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 9. Ilość w magazynie -->
+                <Label Grid.Row="8" Grid.Column="0"
+                       Content="Ilość w magazynie"
+                       VerticalAlignment="Center"
+                       Margin="5"/>
+                <TextBox x:Name="QuantityInStockTextBox"
+                         Grid.Row="8" Grid.Column="1"
+                         Margin="5"
+                         Text="{Binding QuantityInStock, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Przyciski na dole -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center"
+                    Margin="10">
+            <Button x:Name="AddButton"
+                    Width="100"
+                    Margin="5"
+                    Content="Dodaj"
+                    Click="AddButton_OnClick" />
+            <Button x:Name="CancelButton"
+                    Width="100"
+                    Margin="5"
+                    Content="Anuluj"
+                    Click="CancelButton_OnClick" />
+        </StackPanel>
     </Grid>
 </Window>

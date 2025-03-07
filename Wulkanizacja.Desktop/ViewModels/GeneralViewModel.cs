@@ -108,15 +108,19 @@ namespace Wulkanizacja.User.ViewModels
         {
             if (parameter is GeneralViewModel viewModel)
             {
-                var searchParameters = new SearchParameters
+                var addTire = await DialogService.ShowAddDialogAsync("Dodawanie Opony");
+                if(addTire != null)
                 {
-                    Size = viewModel.Size,
-                    Type = (int)viewModel.SelectedTireType
-                };
-                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
-                var data = await _tireRepository.GetTireModelsAsync(searchParameters.Size, (TireType)searchParameters.Type);
-                if (data != null)
-                    TireModels = new ObservableCollection<TireModel>(data);
+                    var add = await _tireRepository.AddTireAsync(addTire);
+                    if (add.IsSuccessStatusCode)
+                    {
+                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
+                    }
+                    else
+                    {
+                        await DialogService.ShowErrorDialogAsync("Błąd", "Opona nie została dodana");
+                    }
+                }
             }
         }
 
@@ -130,7 +134,7 @@ namespace Wulkanizacja.User.ViewModels
                     Type = (int)viewModel.SelectedTireType
                 };
                 var encodedSize = Uri.EscapeDataString(searchParameters.Size);
-                var data = await _tireRepository.GetTireModelsAsync(searchParameters.Size, (TireType)searchParameters.Type);
+                var data = await _tireRepository.GetTireAsync(searchParameters.Size, (TireType)searchParameters.Type);
                 if (data != null)
                     TireModels = new ObservableCollection<TireModel>(data);
             }

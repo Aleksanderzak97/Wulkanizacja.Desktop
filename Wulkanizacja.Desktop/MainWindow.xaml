@@ -10,7 +10,7 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="#252526">
         <!-- Custom Title Bar -->
-        <Border Background="Gray" Height="30" VerticalAlignment="Top" MouseDown="TitleBar_MouseDown">
+        <Border Background="Gray" Height="40" VerticalAlignment="Top" MouseDown="TitleBar_MouseDown">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
