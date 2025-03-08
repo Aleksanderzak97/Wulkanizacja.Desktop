@@ -23,6 +23,11 @@ namespace Wulkanizacja.Desktop.Services
             return await _client.PostDataAsync("tires", tireRequest);
         }
 
+        public async Task<HttpResponseMessage> EditTireAsync(TireModel tireModel, Guid TireId)
+        {
+            return await _client.PutDataAsync($"tires/updateTire/{TireId}", tireModel);
+        }
+
         public async Task<IEnumerable<TireModel>> GetTireAsync(string size, TireType tireType)
         {
             var encodedSize = Uri.EscapeDataString(size);

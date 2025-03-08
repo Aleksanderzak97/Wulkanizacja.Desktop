@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
         mc:Ignorable="d"
+        Style="{StaticResource {x:Type Window}}"
         Title="InformationDialog" Height="450" Width="800">
     <Grid Margin="25">
         <Grid.RowDefinitions>
@@ -29,6 +30,7 @@
                       VerticalScrollBarVisibility="Auto">
             <TextBlock x:Name="BodyText"
                        VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
                        Opacity="0.8"
                        FontSize="20"
                        TextWrapping="Wrap" />

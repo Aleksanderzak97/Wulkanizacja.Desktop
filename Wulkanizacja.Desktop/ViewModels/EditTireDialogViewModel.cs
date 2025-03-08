@@ -8,70 +8,87 @@ using System.Threading.Tasks;
 using System.Windows;
 using Wulkanizacja.Desktop.Converters;
 using Wulkanizacja.Desktop.Enums;
+using Wulkanizacja.Desktop.Models;
 
 namespace Wulkanizacja.Desktop.ViewModels
 {
-    public class AddTireDialogViewModel : INotifyPropertyChanged
+    public class EditTireDialogViewModel : INotifyPropertyChanged
     {
-        private string _brand;
-        private string _model;
-        private string _size;
-        private string _speedIndex;
-        private string _loadIndex;
-        private TireType _tireType;
-        private string _manufactureWeekYear;
-        private string _comments;
-        private int _quantityInStock;
+        private string? _brand;
+        private string? _model;
+        private string? _size;
+        private string? _speedIndex;
+        private string? _loadIndex;
+        private TireType? _tireType;
+        private string? _manufactureWeekYear;
+        private string? _comments;
+        private int? _quantityInStock;
+        private readonly WeekYearToDateConverter weekYearToDateConverter;
 
-        public string Brand
+        public EditTireDialogViewModel(TireModel tireModel)
+        {
+            weekYearToDateConverter = new WeekYearToDateConverter();
+
+            _brand = tireModel.Brand;
+            _model = tireModel.Model;
+            _size = tireModel.Size;
+            _speedIndex = tireModel.SpeedIndex;
+            _loadIndex = tireModel.LoadIndex;
+            _tireType = tireModel.TireType;
+            _manufactureWeekYear = weekYearToDateConverter.ConvertDateToWeekYear(tireModel.ManufactureDate);
+            _comments = tireModel.Comments;
+            _quantityInStock = tireModel.QuantityInStock;
+        }
+
+        public string? Brand
         {
             get => _brand;
             set { _brand = value; OnPropertyChanged(); }
         }
 
-        public string Model
+        public string? Model
         {
             get => _model;
             set { _model = value; OnPropertyChanged(); }
         }
 
-        public string Size
+        public string? Size
         {
             get => _size;
             set { _size = value; OnPropertyChanged(); }
         }
 
-        public string SpeedIndex
+        public string? SpeedIndex
         {
             get => _speedIndex;
             set { _speedIndex = value; OnPropertyChanged(); }
         }
 
-        public string LoadIndex
+        public string? LoadIndex
         {
             get => _loadIndex;
             set { _loadIndex = value; OnPropertyChanged(); }
         }
 
-        public TireType TireType
+        public TireType? TireType
         {
             get => _tireType;
             set { _tireType = value; OnPropertyChanged(); }
         }
 
-        public string ManufactureWeekYear
+        public string? ManufactureWeekYear
         {
             get => _manufactureWeekYear;
             set { _manufactureWeekYear = value; OnPropertyChanged(); }
         }
 
-        public string Comments
+        public string? Comments
         {
             get => _comments;
             set { _comments = value; OnPropertyChanged(); }
         }
 
-        public int QuantityInStock
+        public int? QuantityInStock
         {
             get => _quantityInStock;
             set { _quantityInStock = value; OnPropertyChanged(); }
@@ -79,36 +96,19 @@ namespace Wulkanizacja.Desktop.ViewModels
 
         public bool ValidateInputs()
         {
-            if (string.IsNullOrWhiteSpace(Brand) ||
-                string.IsNullOrWhiteSpace(Model) ||
-                string.IsNullOrWhiteSpace(Size) ||
-                string.IsNullOrWhiteSpace(SpeedIndex) ||
-                string.IsNullOrWhiteSpace(LoadIndex) ||
-                TireType == 0 ||
-                string.IsNullOrWhiteSpace(ManufactureWeekYear) ||
+            if (string.IsNullOrWhiteSpace(Brand) &&
+                string.IsNullOrWhiteSpace(Model) &&
+                string.IsNullOrWhiteSpace(Size) &&
+                string.IsNullOrWhiteSpace(SpeedIndex) &&
+                string.IsNullOrWhiteSpace(LoadIndex) &&
+                TireType == 0 &&
+                string.IsNullOrWhiteSpace(ManufactureWeekYear) &&
                 QuantityInStock <= 0)
             {
                 MessageBox.Show("Wszystkie pola muszą być wypełnione.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
-            try
-            {
-                var converter = new WeekYearToDateConverter();
-                DateTimeOffset convertedDate = converter.ConvertWeekYearToDate(ManufactureWeekYear);
-                if (convertedDate > DateTimeOffset.Now)
-                {
-                    MessageBox.Show("Data wynikająca z 'Tydzień produkcji' nie może być późniejsza od dzisiejszej daty.",
-                                    "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Błąd przy przeliczaniu tygodnia produkcji: {ex.Message}",
-                                "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
-            }
             return true;
         }
 

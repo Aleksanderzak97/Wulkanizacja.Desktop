@@ -137,5 +137,45 @@ namespace Wulkanizacja.Desktop.Services
                 throw;
             }
         }
+
+        public static async Task<TireModel> ShowEditDialogAsync(string title, TireModel tire, string? okButtonText = "Edytuj", string? nokButtonText = "Anuluj")
+        {
+            try
+            {
+                var result = await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    var dialog = new EditTireDialog(tire);
+                    dialog.Title.Text = title.ToUpper();
+                    dialog.AddButton.Content = okButtonText;
+                    CurrentDialog = dialog;
+                    var dialogResult = dialog.ShowDialog() == true;
+                    if (dialogResult)
+                    {
+                        tireModel = new TireModel()
+                        {
+                            Id = tire.Id,
+                            Brand = dialog.BrandTextBox.Text,
+                            Model = dialog.ModelTextBox.Text,
+                            Size = dialog.SizeTextBox.Text,
+                            SpeedIndex = dialog.SpeedIndexTextBox.Text,
+                            LoadIndex = dialog.LoadIndexTextBox.Text,
+                            TireType = (TireType)Enum.Parse(typeof(TireType), ((ComboBoxItem)dialog.TireTypeComboBox.SelectedItem)?.Tag?.ToString() ?? string.Empty),
+                            ManufactureWeekYear = dialog.ManufactureWeekYearTextBox.Text,
+                            Comments = dialog.CommentsTextBox.Text,
+                            QuantityInStock = int.Parse(dialog.QuantityInStockTextBox.Text)
+                        };
+                        return tireModel;
+                    }
+                    return null;
+                });
+                CurrentDialog = null;
+                return tireModel;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+                throw;
+            }
+        }
     }
 }

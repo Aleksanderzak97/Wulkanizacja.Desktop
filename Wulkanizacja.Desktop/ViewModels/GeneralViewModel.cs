@@ -81,6 +81,7 @@ namespace Wulkanizacja.User.ViewModels
         public ObservableCollection<string> TranslatedTireTypes { get; private set; }
         public ICommand AddCommand { get; }
         public ICommand SearchCommand { get; }
+        public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
 
         public GeneralViewModel(WebServiceClient webServiceClient, TireRepository tireRepository)
@@ -95,6 +96,7 @@ namespace Wulkanizacja.User.ViewModels
 
             AddCommand = new RelayCommand(Add);
             SearchCommand = new RelayCommand(Search);
+            EditCommand = new RelayCommand(Edit);
             DeleteCommand = new RelayCommand(Delete);
         }
         private string TranslateTireType(TireType tireType)
@@ -102,7 +104,21 @@ namespace Wulkanizacja.User.ViewModels
             string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
             return TranslationDictionary.Translate(tireType, languageCode);
         }
-
+        private async void Search(object parameter)
+        {
+            if (parameter is GeneralViewModel viewModel)
+            {
+                var searchParameters = new SearchParameters
+                {
+                    Size = viewModel.Size,
+                    Type = (int)viewModel.SelectedTireType
+                };
+                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
+                var data = await _tireRepository.GetTireAsync(searchParameters.Size, (TireType)searchParameters.Type);
+                if (data != null)
+                    TireModels = new ObservableCollection<TireModel>(data);
+            }
+        }
 
         private async void Add(object parameter)
         {
@@ -124,19 +140,23 @@ namespace Wulkanizacja.User.ViewModels
             }
         }
 
-        private async void Search(object parameter)
+        private async void Edit(object parameter)
         {
-            if (parameter is GeneralViewModel viewModel)
+            if (parameter is TireModel tireModel)
             {
-                var searchParameters = new SearchParameters
+                var editTire = await DialogService.ShowEditDialogAsync("Dodawanie Opony", tireModel);
+                if (editTire != null)
                 {
-                    Size = viewModel.Size,
-                    Type = (int)viewModel.SelectedTireType
-                };
-                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
-                var data = await _tireRepository.GetTireAsync(searchParameters.Size, (TireType)searchParameters.Type);
-                if (data != null)
-                    TireModels = new ObservableCollection<TireModel>(data);
+                    var add = await _tireRepository.EditTireAsync(editTire, editTire.Id);
+                    if (add.IsSuccessStatusCode)
+                    {
+                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
+                    }
+                    else
+                    {
+                        await DialogService.ShowErrorDialogAsync("Błąd", "Opona nie została dodana");
+                    }
+                }
             }
         }
 
