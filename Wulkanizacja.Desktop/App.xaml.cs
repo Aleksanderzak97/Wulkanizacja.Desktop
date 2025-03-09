@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Windows;
 using Wulkanizacja.Desktop.Services;
+using Wulkanizacja.Desktop.Views;
 using Wulkanizacja.User.Services;
 using Wulkanizacja.User.ViewModels;
 
@@ -39,6 +40,8 @@ public partial class App : Application
 
     private void ConfigureServices(ServiceCollection services)
     {
+        services.AddSingleton<BusyIndicatorService>();
+        services.AddSingleton<BusyIndicator>();
         services.AddSingleton<MainWindow>();
         services.AddSingleton<MainWindowViewModel>();
 
