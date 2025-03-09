@@ -49,11 +49,6 @@ namespace Wulkanizacja.Desktop.Services
                 }
         }
 
-        //public async Task<HttpResponseMessage> PostDataAsync<T>(string endpoint, T data)
-        //{
-        //    var response = await _client.PostAsJsonAsync(endpoint, data);
-        //    return response;
-        //}
         public async Task<HttpResponseMessage> PostDataAsync<TRequest>(string endpoint, TRequest data)
         {
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
