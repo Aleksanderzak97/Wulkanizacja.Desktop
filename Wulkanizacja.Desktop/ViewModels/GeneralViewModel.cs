@@ -106,11 +106,19 @@ namespace Wulkanizacja.User.ViewModels
         }
         private async void Search(object parameter)
         {
+            BusyIndicatorService.Instance.IsBusy = true;
             if (parameter is GeneralViewModel viewModel)
             {
                 if (string.IsNullOrWhiteSpace(viewModel.Size))
                 {
                     await DialogService.ShowErrorDialogAsync("Błąd", "Pole 'Rozmiar' nie może być puste.");
+                    BusyIndicatorService.Instance.IsBusy = false;
+                    return;
+                }
+                if (viewModel.SelectedTireType == 0)
+                {
+                    await DialogService.ShowErrorDialogAsync("Błąd", "Musisz wybrać typ opony.");
+                    BusyIndicatorService.Instance.IsBusy = false;
                     return;
                 }
 
@@ -124,6 +132,7 @@ namespace Wulkanizacja.User.ViewModels
                 if (data != null)
                     TireModels = new ObservableCollection<TireModel>(data);
             }
+            BusyIndicatorService.Instance.IsBusy = false;
         }
 
         private async void Add(object parameter)
@@ -133,12 +142,15 @@ namespace Wulkanizacja.User.ViewModels
                 var addTire = await DialogService.ShowAddDialogAsync("Dodawanie Opony");
                 if(addTire != null)
                 {
+                    BusyIndicatorService.Instance.IsBusy = true;
                     var add = await _tireRepository.AddTireAsync(addTire);
                     if (add.IsSuccessStatusCode)
                     {
                         TireModels.Add(addTire);
                         await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została dodana pomyślnie");
+                        BusyIndicatorService.Instance.IsBusy = false;
                     }
+                    BusyIndicatorService.Instance.IsBusy = false;
                 }
             }
         }
@@ -150,6 +162,7 @@ namespace Wulkanizacja.User.ViewModels
                 var editTire = await DialogService.ShowEditDialogAsync("Edytowanie opony", tireModel);
                 if (editTire != null)
                 {
+                    BusyIndicatorService.Instance.IsBusy = true;
                     var edit = await _tireRepository.EditTireAsync(editTire, editTire.Id);
                     if (edit.IsSuccessStatusCode)
                     {
@@ -159,7 +172,9 @@ namespace Wulkanizacja.User.ViewModels
                             TireModels[index] = editTire;
                         }
                         await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została edytowana pomyślnie");
+                        BusyIndicatorService.Instance.IsBusy = false;
                     }
+                    BusyIndicatorService.Instance.IsBusy = false;
                 }
             }
         }
@@ -171,14 +186,17 @@ namespace Wulkanizacja.User.ViewModels
                 var Question = await DialogService.ShowQuestionDialogAsync("Pytanie", "Czy na pewno chcesz usunąć oponę?");
                 if (Question)
                 {
+                BusyIndicatorService.Instance.IsBusy = true;
                 var Guid = tireModel.Id;
                 var delete = await _tireRepository.DeleteTireAsync(Guid);
-                if (delete.IsSuccessStatusCode)
-                {
-                    TireModels.Remove(tireModel);
-                        await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została usunięta pomyślnie");
+                    if (delete.IsSuccessStatusCode)
+                    {
+                        TireModels.Remove(tireModel);
+                            await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została usunięta pomyślnie");
+                            BusyIndicatorService.Instance.IsBusy = false;
                     }
                 }
+                BusyIndicatorService.Instance.IsBusy = false;
             }
         }
 
