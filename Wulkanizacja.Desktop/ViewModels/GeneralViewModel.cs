@@ -113,6 +113,11 @@ namespace Wulkanizacja.User.ViewModels
                     await DialogService.ShowErrorDialogAsync("Błąd", "Pole 'Rozmiar' nie może być puste.");
                     return;
                 }
+                if (viewModel.SelectedTireType == 0)
+                {
+                    await DialogService.ShowErrorDialogAsync("Błąd", "Musisz wybrać typ opony.");
+                    return;
+                }
 
                 var searchParameters = new SearchParameters
                 {
