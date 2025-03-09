@@ -136,6 +136,7 @@ namespace Wulkanizacja.User.ViewModels
                     var add = await _tireRepository.AddTireAsync(addTire);
                     if (add.IsSuccessStatusCode)
                     {
+                        TireModels.Add(addTire);
                         await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
                     }
                 }
