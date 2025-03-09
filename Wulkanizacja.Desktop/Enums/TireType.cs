@@ -8,7 +8,6 @@ namespace Wulkanizacja.Desktop.Enums
 {
     public enum TireType
     {
-        None = 0,
         Summer = 1,   // Letnia
         Winter = 2,   // Zimowa
         AllSeason = 3 // Całoroczna

@@ -98,7 +98,9 @@
         </Grid>
 
         <!-- List -->
-        <ListView Grid.Row="2" Margin="5" ItemsSource="{Binding TireModels}" SelectedItem="{Binding SelectedTireModel, Mode=TwoWay}" Background="DarkGray" HorizontalContentAlignment="Center">
+        <ListView Grid.Row="2" Margin="5" ItemsSource="{Binding TireModels}" SelectedItem="{Binding SelectedTireModel, Mode=TwoWay}"
+                  Background="DarkGray" HorizontalContentAlignment="Center" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

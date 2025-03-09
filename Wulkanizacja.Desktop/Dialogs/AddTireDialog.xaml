@@ -125,7 +125,6 @@
                           SelectedValue="{Binding TireType, UpdateSourceTrigger=PropertyChanged}"
                           SelectedIndex="0"
                           Style="{StaticResource DarkComboBoxStyle}">
-                    <ComboBoxItem Content="-- Wybierz rodzaj opony --" Tag="0"/>
                     <ComboBoxItem Content="Letnia" Tag="1"/>
                     <ComboBoxItem Content="Zimowa" Tag="2"/>
                     <ComboBoxItem Content="Całoroczna" Tag="3"/>
