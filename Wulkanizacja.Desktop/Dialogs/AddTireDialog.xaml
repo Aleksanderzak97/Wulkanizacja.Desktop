@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Style="{StaticResource {x:Type Window}}"
         Title="Dodawanie Opony" 
         Height="450" Width="800">
@@ -121,13 +122,9 @@
                 <ComboBox x:Name="TireTypeComboBox"
                           Grid.Row="5" Grid.Column="1"
                           Margin="5"
-                          SelectedValuePath="Tag"
-                          SelectedValue="{Binding TireType, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="0"
+                          ItemsSource="{Binding TranslatedTireTypes}"
+                          SelectedValue="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}"
                           Style="{StaticResource DarkComboBoxStyle}">
-                    <ComboBoxItem Content="Letnia" Tag="1"/>
-                    <ComboBoxItem Content="Zimowa" Tag="2"/>
-                    <ComboBoxItem Content="Całoroczna" Tag="3"/>
                 </ComboBox>
 
                 <!-- 7. Data Produkcji -->

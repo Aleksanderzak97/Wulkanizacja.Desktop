@@ -32,7 +32,7 @@ namespace Wulkanizacja.Desktop.Services
             }
             catch (ApiResponseException ex)
             {
-                await DialogService.ShowErrorDialogAsync("Błąd", ex.Message + "Opona nie została dodana");
+                await DialogService.ShowErrorDialogAsync("Błąd", ex.Message);
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             catch (HttpRequestException ex)
@@ -55,7 +55,7 @@ namespace Wulkanizacja.Desktop.Services
             }
             catch (ApiResponseException ex)
             {
-                await DialogService.ShowErrorDialogAsync("Błąd", ex.Message + "Opona nie została edytowana");
+                await DialogService.ShowErrorDialogAsync("Błąd", ex.Message);
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
             catch (HttpRequestException ex)

@@ -137,7 +137,7 @@ namespace Wulkanizacja.User.ViewModels
                     if (add.IsSuccessStatusCode)
                     {
                         TireModels.Add(addTire);
-                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
+                        await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została dodana pomyślnie");
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace Wulkanizacja.User.ViewModels
                         {
                             TireModels[index] = editTire;
                         }
-                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została edytowana pomyślnie");
+                        await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została edytowana pomyślnie");
                     }
                 }
             }
@@ -176,7 +176,7 @@ namespace Wulkanizacja.User.ViewModels
                 if (delete.IsSuccessStatusCode)
                 {
                     TireModels.Remove(tireModel);
-                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została usunięta pomyślnie");
+                        await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została usunięta pomyślnie");
                     }
                 }
             }

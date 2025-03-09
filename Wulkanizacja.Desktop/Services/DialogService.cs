@@ -16,7 +16,6 @@ namespace Wulkanizacja.Desktop.Services
 {
     public static class DialogService
     {
-        public static Window? CurrentDialog { get; private set; }
         private static Window _owner;
         private static bool _errorResult;
         private static TireModel tireModel;
@@ -34,12 +33,11 @@ namespace Wulkanizacja.Desktop.Services
                     dialog.Title.Text = title.ToUpper();
                     dialog.BodyText.Text = message;
                     dialog.OkButton.Content = okButtonText;
-                    CurrentDialog = dialog;
+                    dialog.Owner = _owner;
                     var dialogResult = dialog.ShowDialog() == true;
                     _errorResult = dialogResult;
                     return dialogResult;
                 });
-                CurrentDialog = null;
                 return _errorResult;
             }
             catch (Exception exception)
@@ -59,12 +57,35 @@ namespace Wulkanizacja.Desktop.Services
                     dialog.Title.Text = title.ToUpper();
                     dialog.BodyText.Text = message;
                     dialog.OkButton.Content = okButtonText;
-                    CurrentDialog = dialog;
+                    dialog.Owner = _owner;
                     var dialogResult = dialog.ShowDialog() == true;
                     _errorResult = dialogResult;
                     return dialogResult;
                 });
-                CurrentDialog = null;
+                return _errorResult;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+                throw;
+            }
+        }
+
+        public static async Task<bool> ShowSuccesDialogAsync(string title, string message, string? okButtonText = "OK")
+        {
+            try
+            {
+                var result = await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    var dialog = new SuccessDialog();
+                    dialog.Title.Text = title.ToUpper();
+                    dialog.BodyText.Text = message;
+                    dialog.OkButton.Content = okButtonText;
+                    dialog.Owner = _owner;
+                    var dialogResult = dialog.ShowDialog() == true;
+                    _errorResult = dialogResult;
+                    return dialogResult;
+                });
                 return _errorResult;
             }
             catch (Exception exception)
@@ -84,12 +105,11 @@ namespace Wulkanizacja.Desktop.Services
                     dialog.Title.Text = title.ToUpper();
                     dialog.BodyText.Text = message;
                     dialog.OkButton.Content = okButtonText;
-                    CurrentDialog = dialog;
+                    dialog.Owner = _owner;
                     var dialogResult = dialog.ShowDialog() == true;
                     _errorResult = dialogResult;
                     return dialogResult;
                 });
-                CurrentDialog = null;
                 return _errorResult;
             }
             catch (Exception exception)
@@ -108,27 +128,27 @@ namespace Wulkanizacja.Desktop.Services
                     var dialog = new AddTireDialog();
                     dialog.Title.Text = title.ToUpper();
                     dialog.AddButton.Content = okButtonText;
-                    CurrentDialog = dialog;
+                    dialog.Owner = _owner;
                     var dialogResult = dialog.ShowDialog() == true;
                     if (dialogResult)
                     {
+                        var vm = dialog.ViewModel;
                         tireModel = new TireModel()
                         {
-                            Brand = dialog.BrandTextBox.Text,
-                            Model = dialog.ModelTextBox.Text,
-                            Size = dialog.SizeTextBox.Text,
-                            SpeedIndex = dialog.SpeedIndexTextBox.Text,
-                            LoadIndex = dialog.LoadIndexTextBox.Text,
-                            TireType = (TireType)Enum.Parse(typeof(TireType), ((ComboBoxItem)dialog.TireTypeComboBox.SelectedItem)?.Tag?.ToString() ?? string.Empty),
-                            ManufactureDate = dialog.ManufactureWeekYearTextBox.Text,
-                            Comments = dialog.CommentsTextBox.Text,
-                            QuantityInStock = int.Parse(dialog.QuantityInStockTextBox.Text)
+                            Brand = vm.Brand,
+                            Model = vm.Model,
+                            Size = vm.Size,
+                            SpeedIndex = vm.SpeedIndex,
+                            LoadIndex = vm.LoadIndex,
+                            TireType = vm.TireType,
+                            ManufactureDate = vm.ManufactureDate,
+                            Comments = vm.Comments,
+                            QuantityInStock = vm.QuantityInStock
                         };
                         return tireModel;
                     }
                     return null;
                 });
-                CurrentDialog = null;
                 return tireModel;
             }
             catch (Exception exception)
@@ -147,28 +167,28 @@ namespace Wulkanizacja.Desktop.Services
                     var dialog = new EditTireDialog(tire);
                     dialog.Title.Text = title.ToUpper();
                     dialog.AddButton.Content = okButtonText;
-                    CurrentDialog = dialog;
+                    dialog.Owner = _owner;
                     var dialogResult = dialog.ShowDialog() == true;
                     if (dialogResult)
                     {
+                        var vm = dialog.ViewModel;
                         tireModel = new TireModel()
                         {
                             Id = tire.Id,
-                            Brand = dialog.BrandTextBox.Text,
-                            Model = dialog.ModelTextBox.Text,
-                            Size = dialog.SizeTextBox.Text,
-                            SpeedIndex = dialog.SpeedIndexTextBox.Text,
-                            LoadIndex = dialog.LoadIndexTextBox.Text,
-                            TireType = (TireType)Enum.Parse(typeof(TireType), ((ComboBoxItem)dialog.TireTypeComboBox.SelectedItem)?.Tag?.ToString() ?? string.Empty),
-                            ManufactureDate = dialog.ManufactureWeekYearTextBox.Text,
-                            Comments = dialog.CommentsTextBox.Text,
-                            QuantityInStock = int.Parse(dialog.QuantityInStockTextBox.Text)
+                            Brand = vm.Brand,
+                            Model = vm.Model,
+                            Size = vm.Size,
+                            SpeedIndex = vm.SpeedIndex,
+                            LoadIndex = vm.LoadIndex,
+                            TireType = vm.TireType,
+                            ManufactureDate = vm.ManufactureDate,
+                            Comments = vm.Comments,
+                            QuantityInStock = vm.QuantityInStock ?? 0
                         };
                         return tireModel;
                     }
                     return null;
                 });
-                CurrentDialog = null;
                 return tireModel;
             }
             catch (Exception exception)

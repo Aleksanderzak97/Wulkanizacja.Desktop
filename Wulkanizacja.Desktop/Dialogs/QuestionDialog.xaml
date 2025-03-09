@@ -21,7 +21,8 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    TextWrapping="Wrap"
-                   Text="INFORMACJA"/>
+                   Foreground="Blue"
+                   Text="ZAPYTANIE"/>
         <ScrollViewer Grid.Row="1"
                       MaxHeight="200"
                       VerticalAlignment="Stretch"

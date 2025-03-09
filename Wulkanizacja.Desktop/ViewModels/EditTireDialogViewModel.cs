@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Wulkanizacja.Desktop.Converters;
+using Wulkanizacja.Desktop.Dictionary;
 using Wulkanizacja.Desktop.Enums;
 using Wulkanizacja.Desktop.Models;
 
@@ -19,27 +22,33 @@ namespace Wulkanizacja.Desktop.ViewModels
         private string? _size;
         private string? _speedIndex;
         private string? _loadIndex;
-        private TireType? _tireType;
+        private TireType _tireType;
         private string? _manufactureDate;
         private string? _comments;
         private int? _quantityInStock;
-        private readonly WeekYearToDateConverter weekYearToDateConverter;
+        private string _selectedTranslatedTireType;
+        private readonly Dictionary<string, TireType> _translatedToOriginalTireTypeMap;
 
         public EditTireDialogViewModel(TireModel tireModel)
         {
-            weekYearToDateConverter = new WeekYearToDateConverter();
+            TireTypes = new ObservableCollection<TireType>(Enum.GetValues(typeof(TireType)).Cast<TireType>());
+            _translatedToOriginalTireTypeMap = TireTypes.ToDictionary(t => TranslateTireType(t), t => t);
+            TranslatedTireTypes = new ObservableCollection<string>(_translatedToOriginalTireTypeMap.Keys);
 
-            _brand = tireModel.Brand;
-            _model = tireModel.Model;
-            _size = tireModel.Size;
-            _speedIndex = tireModel.SpeedIndex;
-            _loadIndex = tireModel.LoadIndex;
-            _tireType = tireModel.TireType;
-            _manufactureDate = tireModel.ManufactureDate;
-            _comments = tireModel.Comments;
-            _quantityInStock = tireModel.QuantityInStock;
+            Brand = tireModel.Brand;
+            Model = tireModel.Model;
+            Size = tireModel.Size;
+            SpeedIndex = tireModel.SpeedIndex;
+            LoadIndex = tireModel.LoadIndex;
+            Comments = tireModel.Comments;
+            ManufactureDate = tireModel.ManufactureDate;
+            QuantityInStock = tireModel.QuantityInStock;
+            TireType = tireModel.TireType;
+            SelectedTranslatedTireType = TranslateTireType(tireModel.TireType);
         }
 
+        public ObservableCollection<TireType> TireTypes { get; }
+        public ObservableCollection<string> TranslatedTireTypes { get; private set; }
         public string? Brand
         {
             get => _brand;
@@ -70,10 +79,24 @@ namespace Wulkanizacja.Desktop.ViewModels
             set { _loadIndex = value; OnPropertyChanged(); }
         }
 
-        public TireType? TireType
+        public TireType TireType
         {
             get => _tireType;
             set { _tireType = value; OnPropertyChanged(); }
+        }
+
+        public string SelectedTranslatedTireType
+        {
+            get => _selectedTranslatedTireType;
+            set
+            {
+                _selectedTranslatedTireType = value;
+                if (_translatedToOriginalTireTypeMap.TryGetValue(value, out var originalTireType))
+                {
+                    TireType = originalTireType;
+                }
+                OnPropertyChanged();
+            }
         }
 
         public string? ManufactureDate
@@ -110,6 +133,12 @@ namespace Wulkanizacja.Desktop.ViewModels
             }
 
             return true;
+        }
+
+        private string TranslateTireType(TireType tireType)
+        {
+            string languageCode = CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+            return TranslationDictionary.Translate(tireType, languageCode);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

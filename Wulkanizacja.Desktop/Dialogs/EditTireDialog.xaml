@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
         xmlns:local1="clr-namespace:Wulkanizacja.Desktop.Enums"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Style="{StaticResource {x:Type Window}}"
         Title="EditTireDialog" Height="450" Width="800">
     <Grid Margin="25">
@@ -120,14 +121,9 @@
                 <ComboBox x:Name="TireTypeComboBox"
                           Grid.Row="5" Grid.Column="1"
                           Margin="5"
-                          SelectedValuePath="Tag"
-                          SelectedValue="{Binding TireType, UpdateSourceTrigger=PropertyChanged}"
-                          SelectedIndex="0"
+                          ItemsSource="{Binding TranslatedTireTypes}"
+                          SelectedValue="{Binding SelectedTranslatedTireType, UpdateSourceTrigger=PropertyChanged}"
                           Style="{StaticResource DarkComboBoxStyle}">
-                    <ComboBoxItem Content="-- Wybierz rodzaj opony --" Tag="0"/>
-                    <ComboBoxItem Content="Letnia" Tag="{x:Static local1:TireType.Summer}"/>
-                    <ComboBoxItem Content="Zimowa" Tag="{x:Static local1:TireType.Winter}"/>
-                    <ComboBoxItem Content="Całoroczna" Tag="{x:Static local1:TireType.AllSeason}"/>
                 </ComboBox>
 
                 <!-- 7. Data Produkcji -->
