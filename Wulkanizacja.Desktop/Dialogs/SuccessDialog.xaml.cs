@@ -10,20 +10,24 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Wulkanizacja.User.ViewModels;
 
-namespace Wulkanizacja.User.Views
+namespace Wulkanizacja.Desktop.Dialogs
 {
     /// <summary>
-    /// Logika interakcji dla klasy GeneralView.xaml
+    /// Logika interakcji dla klasy SuccessDialog.xaml
     /// </summary>
-    public partial class GeneralView : UserControl
+    public partial class SuccessDialog : Window
     {
-        public GeneralView()
+        public SuccessDialog()
         {
             InitializeComponent();
+        }
+
+        private void Button_OnClick(object sender, RoutedEventArgs e)
+        {
+            this.DialogResult = true;
+            this.Close();
         }
     }
 }

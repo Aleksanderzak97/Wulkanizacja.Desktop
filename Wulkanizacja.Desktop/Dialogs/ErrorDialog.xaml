@@ -1,0 +1,48 @@
+﻿<Window x:Class="Wulkanizacja.Desktop.Dialogs.ErrorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource {x:Type Window}}"
+        Title="ErrorDialog" Height="450" Width="800">
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="Title"
+                   Grid.Row="0"
+                   FontSize="28"
+                   FontStyle="Normal"
+                   Background="Transparent"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextWrapping="Wrap"
+                   Foreground="Red"
+                   Text="BŁĄD"/>
+        <ScrollViewer Grid.Row="1"
+                      MaxHeight="200"
+                      VerticalAlignment="Stretch"
+                      BorderBrush="Transparent"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <TextBlock x:Name="BodyText"
+                       VerticalAlignment="Top"
+                       HorizontalAlignment="Center"
+                       Opacity="0.8"
+                       FontSize="20"
+                       TextWrapping="Wrap" />
+        </ScrollViewer>
+        <Button Grid.Row="2"
+                x:Name="OkButton"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="100"
+                Content="OK"
+                Click="Button_OnClick" />
+    </Grid>
+</Window>

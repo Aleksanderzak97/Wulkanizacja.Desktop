@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,12 @@ namespace Wulkanizacja.User.Services
 {
     public class NavigationService : INavigationService
     {
-        private static NavigationService _instance;
-        public static NavigationService Instance => _instance ??= new NavigationService();
+        private readonly IServiceProvider _serviceProvider;
+
+        public NavigationService(IServiceProvider serviceProvider)
+        {
+            _serviceProvider = serviceProvider;
+        }
 
         public event Action<object> ViewModelChanged;
 
@@ -18,10 +23,10 @@ namespace Wulkanizacja.User.Services
         {
             object viewModel = viewKey switch
             {
-                "Login" => new LoginViewModel(this),
-                "General" => new GeneralViewModel(),
-                "Content" => new ContentControlViewModel(),
-                _ => new LoginViewModel(this)
+                "Login" => _serviceProvider.GetRequiredService<LoginViewModel>(),
+                "General" => _serviceProvider.GetRequiredService<GeneralViewModel>(),
+                "Content" => _serviceProvider.GetRequiredService<ContentControlViewModel>(),
+                _ => _serviceProvider.GetRequiredService<LoginViewModel>()
             };
 
             ViewModelChanged?.Invoke(viewModel);
