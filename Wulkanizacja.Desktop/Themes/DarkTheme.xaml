@@ -1,0 +1,201 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Kolory bazowe -->
+    <Color x:Key="WindowBackgroundColor">#FF2D2D30</Color>
+    <Color x:Key="ControlBackgroundColor">#FF3E3E42</Color>
+    <Color x:Key="AccentColor">#FF007ACC</Color>
+    <Color x:Key="TextColor">#FFFFFFFF</Color>
+
+    <!-- Pędzle -->
+    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource WindowBackgroundColor}"/>
+    <SolidColorBrush x:Key="ControlBackgroundBrush" Color="{StaticResource ControlBackgroundColor}"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+    <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}"/>
+
+    <!-- Styl okna -->
+    <Style TargetType="Window">
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+
+    <!-- Styl Label -->
+    <Style TargetType="Label">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="Margin" Value="5"/>
+    </Style>
+
+    <!-- Styl TextBox -->
+    <Style TargetType="TextBox">
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="BorderBrush" Value="#FF505050"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
+    <!-- Styl PasswordBox -->
+    <Style TargetType="PasswordBox">
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="BorderBrush" Value="#FF505050"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    
+
+    <!-- Styl Button -->
+    <Style TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="10,5"/>
+    </Style>
+
+    <!-- Styl Comboboxa -->
+    <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+        <!-- Ustawienia domyślne: kolory tła, obramowania, itd. -->
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="BorderBrush" Value="#FF505050"/>
+        <Setter Property="BorderThickness" Value="1"/>
+
+        <!-- Definicja szablonu -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBox">
+                    <Grid SnapsToDevicePixels="True">
+                        <!-- 
+                        Główny Grid może mieć 2 kolumny, ale typowo 
+                        stosuje się jedną, a ToggleButton (zawierający strzałkę + tekst)
+                        rozciąga się na całą szerokość. 
+                    -->
+                        <ToggleButton x:Name="ToggleButton"
+                                  Grid.ColumnSpan="2"
+                                  Background="{TemplateBinding Background}"
+                                  Foreground="{TemplateBinding Foreground}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  ClickMode="Press"
+                                  Focusable="False"
+                                  IsChecked="{Binding IsDropDownOpen, 
+                                                      RelativeSource={RelativeSource TemplatedParent}, 
+                                                      Mode=TwoWay}">
+                            <!-- Własny szablon ToggleButton -->
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                        <!-- Grid z dwiema kolumnami: 
+                                         kolumna 0 -> wybrany tekst
+                                         kolumna 1 -> strzałka -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Tekst wybranego elementu -->
+                                            <ContentPresenter Grid.Column="0"
+                                                          Margin="6,3,6,3"
+                                                          VerticalAlignment="Center"
+                                                          HorizontalAlignment="Center"
+                                                          RecognizesAccessKey="True"
+                                                          Content="{TemplateBinding Content}"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"/>
+
+                                            <!-- Strzałka -->
+                                            <Path x:Name="Arrow"
+                                              Grid.Column="1"
+                                              Margin="0,0,4,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalAlignment="Right"
+                                              Data="M 0 0 L 4 4 L 8 0 Z"
+                                              Fill="{TemplateBinding Foreground}" />
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <!-- Podświetlenie strzałki przy najechaniu -->
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Arrow" Property="Fill" 
+                                                Value="{StaticResource AccentBrush}"/>
+                                        </Trigger>
+                                        <!-- Obrót strzałki przy rozwinięciu listy -->
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+
+                        </ToggleButton>
+
+                        <!-- Popup z listą elementów -->
+                        <Popup x:Name="Popup"
+                           Grid.ColumnSpan="2"
+                           Placement="Bottom"
+                           IsOpen="{TemplateBinding IsDropDownOpen}"
+                           AllowsTransparency="True"
+                           Focusable="False"
+                           PopupAnimation="Slide">
+                            <Grid x:Name="DropDown"
+                              SnapsToDevicePixels="True"
+                              MinWidth="{TemplateBinding ActualWidth}"
+                              MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                <Border x:Name="DropDownBorder"
+                                    Background="{StaticResource ControlBackgroundBrush}"
+                                    BorderThickness="1"
+                                    BorderBrush="{TemplateBinding BorderBrush}"/>
+                                <ScrollViewer Margin="4"
+                                          SnapsToDevicePixels="True">
+                                    <StackPanel IsItemsHost="True"
+                                            KeyboardNavigation.DirectionalNavigation="Contained" />
+                                </ScrollViewer>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Gdy nie ma elementów, ustaw minimalną wysokość listy -->
+                        <Trigger Property="HasItems" Value="False">
+                            <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+                        </Trigger>
+                        <!-- Gdy kontrolka jest nieaktywna (IsEnabled = false) -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="#888"/>
+                        </Trigger>
+
+                        <Trigger Property="IsDropDownOpen" Value="False">
+                            <Setter TargetName="ToggleButton" Property="Content" 
+                                Value="{Binding SelectionBoxItem, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="ToggleButton" Property="ContentTemplate"
+                                Value="{Binding SelectionBoxItemTemplate, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="ToggleButton" Property="ContentStringFormat"
+                                Value="{Binding SelectionBoxItemStringFormat, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsDropDownOpen" Value="True">
+        
+                            <Setter TargetName="ToggleButton" Property="Content"
+                                Value="{Binding SelectionBoxItem, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="ToggleButton" Property="ContentTemplate"
+                                Value="{Binding SelectionBoxItemTemplate, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter TargetName="ToggleButton" Property="ContentStringFormat"
+                                Value="{Binding SelectionBoxItemStringFormat, 
+                                        RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+
+
+</ResourceDictionary>
