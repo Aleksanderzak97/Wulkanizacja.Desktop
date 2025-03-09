@@ -120,7 +120,7 @@ namespace Wulkanizacja.Desktop.Services
                             SpeedIndex = dialog.SpeedIndexTextBox.Text,
                             LoadIndex = dialog.LoadIndexTextBox.Text,
                             TireType = (TireType)Enum.Parse(typeof(TireType), ((ComboBoxItem)dialog.TireTypeComboBox.SelectedItem)?.Tag?.ToString() ?? string.Empty),
-                            ManufactureWeekYear = dialog.ManufactureWeekYearTextBox.Text,
+                            ManufactureDate = dialog.ManufactureWeekYearTextBox.Text,
                             Comments = dialog.CommentsTextBox.Text,
                             QuantityInStock = int.Parse(dialog.QuantityInStockTextBox.Text)
                         };
@@ -160,7 +160,7 @@ namespace Wulkanizacja.Desktop.Services
                             SpeedIndex = dialog.SpeedIndexTextBox.Text,
                             LoadIndex = dialog.LoadIndexTextBox.Text,
                             TireType = (TireType)Enum.Parse(typeof(TireType), ((ComboBoxItem)dialog.TireTypeComboBox.SelectedItem)?.Tag?.ToString() ?? string.Empty),
-                            ManufactureWeekYear = dialog.ManufactureWeekYearTextBox.Text,
+                            ManufactureDate = dialog.ManufactureWeekYearTextBox.Text,
                             Comments = dialog.CommentsTextBox.Text,
                             QuantityInStock = int.Parse(dialog.QuantityInStockTextBox.Text)
                         };

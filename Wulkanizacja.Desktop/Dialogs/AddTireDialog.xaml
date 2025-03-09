@@ -139,7 +139,7 @@
                 <TextBox x:Name="ManufactureWeekYearTextBox"
                          Grid.Row="6" Grid.Column="1"
                          Margin="5"
-                         Text="{Binding ManufactureWeekYear, UpdateSourceTrigger=PropertyChanged}"/>
+                         Text="{Binding ManufactureDate, UpdateSourceTrigger=PropertyChanged}"/>
 
                 <!-- 8. Komentarze -->
                 <Label Grid.Row="7" Grid.Column="0"

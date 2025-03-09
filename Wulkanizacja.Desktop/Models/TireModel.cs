@@ -17,9 +17,7 @@ namespace Wulkanizacja.Desktop.Models
         public string SpeedIndex { get; set; }
         public string LoadIndex { get; set; }
         public TireType TireType { get; set; }
-        public DateTimeOffset? ManufactureDate { get; set; }
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public string ManufactureWeekYear { get; set; }
+        public string ManufactureDate { get; set; }
         public DateTimeOffset? CreateDate { get; set; }
         public DateTimeOffset? EditDate { get; set; }
         public string? Comments { get; set; }

@@ -20,7 +20,7 @@ namespace Wulkanizacja.Desktop.ViewModels
         private string? _speedIndex;
         private string? _loadIndex;
         private TireType? _tireType;
-        private string? _manufactureWeekYear;
+        private string? _manufactureDate;
         private string? _comments;
         private int? _quantityInStock;
         private readonly WeekYearToDateConverter weekYearToDateConverter;
@@ -35,7 +35,7 @@ namespace Wulkanizacja.Desktop.ViewModels
             _speedIndex = tireModel.SpeedIndex;
             _loadIndex = tireModel.LoadIndex;
             _tireType = tireModel.TireType;
-            _manufactureWeekYear = weekYearToDateConverter.ConvertDateToWeekYear(tireModel.ManufactureDate);
+            _manufactureDate = tireModel.ManufactureDate;
             _comments = tireModel.Comments;
             _quantityInStock = tireModel.QuantityInStock;
         }
@@ -76,10 +76,10 @@ namespace Wulkanizacja.Desktop.ViewModels
             set { _tireType = value; OnPropertyChanged(); }
         }
 
-        public string? ManufactureWeekYear
+        public string? ManufactureDate
         {
-            get => _manufactureWeekYear;
-            set { _manufactureWeekYear = value; OnPropertyChanged(); }
+            get => _manufactureDate;
+            set { _manufactureDate = value; OnPropertyChanged(); }
         }
 
         public string? Comments
@@ -102,7 +102,7 @@ namespace Wulkanizacja.Desktop.ViewModels
                 string.IsNullOrWhiteSpace(SpeedIndex) &&
                 string.IsNullOrWhiteSpace(LoadIndex) &&
                 TireType == 0 &&
-                string.IsNullOrWhiteSpace(ManufactureWeekYear) &&
+                string.IsNullOrWhiteSpace(ManufactureDate) &&
                 QuantityInStock <= 0)
             {
                 MessageBox.Show("Wszystkie pola muszą być wypełnione.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);

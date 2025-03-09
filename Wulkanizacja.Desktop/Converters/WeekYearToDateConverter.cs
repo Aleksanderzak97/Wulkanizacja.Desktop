@@ -25,24 +25,5 @@ namespace Wulkanizacja.Desktop.Converters
             DateTime date = ISOWeek.ToDateTime(year, week, DayOfWeek.Monday);
             return new DateTimeOffset(date, TimeSpan.Zero);
         }
-
-   
-        public string ConvertDateToWeekYear(DateTimeOffset? date)
-        {
-                DateTime utcDate = date.Value.UtcDateTime.Date;
-
-                int week = ISOWeek.GetWeekOfYear(utcDate);
-                int year = ISOWeek.GetYear(utcDate);
-
-                int shortYear = year - 2000;
-                if (shortYear < 0 || shortYear > 99)
-                {
-                    throw new ArgumentException("Rok spoza obsługiwanego zakresu (2000-2099).", nameof(date));
-                }
-
-                return $"{week:00}{shortYear:00}";
-            }
-        }
-    
     }
 }
