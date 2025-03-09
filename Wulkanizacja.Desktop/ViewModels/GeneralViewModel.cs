@@ -108,6 +108,12 @@ namespace Wulkanizacja.User.ViewModels
         {
             if (parameter is GeneralViewModel viewModel)
             {
+                if (string.IsNullOrWhiteSpace(viewModel.Size))
+                {
+                    await DialogService.ShowErrorDialogAsync("Błąd", "Pole 'Rozmiar' nie może być puste.");
+                    return;
+                }
+
                 var searchParameters = new SearchParameters
                 {
                     Size = viewModel.Size,
@@ -132,10 +138,6 @@ namespace Wulkanizacja.User.ViewModels
                     {
                         await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
                     }
-                    else
-                    {
-                        await DialogService.ShowErrorDialogAsync("Błąd", "Opona nie została dodana");
-                    }
                 }
             }
         }
@@ -144,17 +146,18 @@ namespace Wulkanizacja.User.ViewModels
         {
             if (parameter is TireModel tireModel)
             {
-                var editTire = await DialogService.ShowEditDialogAsync("Dodawanie Opony", tireModel);
+                var editTire = await DialogService.ShowEditDialogAsync("Edytowanie opony", tireModel);
                 if (editTire != null)
                 {
-                    var add = await _tireRepository.EditTireAsync(editTire, editTire.Id);
-                    if (add.IsSuccessStatusCode)
+                    var edit = await _tireRepository.EditTireAsync(editTire, editTire.Id);
+                    if (edit.IsSuccessStatusCode)
                     {
-                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została dodana pomyślnie");
-                    }
-                    else
-                    {
-                        await DialogService.ShowErrorDialogAsync("Błąd", "Opona nie została dodana");
+                        int index = TireModels.IndexOf(tireModel);
+                        if (index != -1)
+                        {
+                            TireModels[index] = editTire;
+                        }
+                        await DialogService.ShowInfoDialogAsync("Sukces", "Opona została edytowana pomyślnie");
                     }
                 }
             }

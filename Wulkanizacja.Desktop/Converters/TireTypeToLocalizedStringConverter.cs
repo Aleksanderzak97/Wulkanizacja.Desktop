@@ -11,7 +11,7 @@ using Wulkanizacja.Desktop.Enums;
 
 namespace Wulkanizacja.Desktop.Converters
 {
-    class TireTypeToLocalizedStringConverter : IValueConverter
+    public class TireTypeToLocalizedStringConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
