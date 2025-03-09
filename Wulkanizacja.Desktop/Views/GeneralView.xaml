@@ -154,7 +154,7 @@
                     <GridViewColumn Header="Rok produkcji" Width="150">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ManufactureDate, Converter={StaticResource DateTimeOffsetToMonthYearConverter}}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
+                                <TextBlock Text="{Binding ManufactureDate}" TextAlignment="Center" HorizontalAlignment="Stretch"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
