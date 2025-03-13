@@ -23,7 +23,7 @@ W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
             {
                 BaseAddress = new Uri("http://localhost:5884")
             };
-            
+
 
 ## Uruchomienie
 1. Sklonuj repozytorium.
@@ -40,7 +40,7 @@ W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
 ## Architektura
 - **MVVM (Model-View-ViewModel)**: Aplikacja korzysta z wzorca MVVM, aby oddzielić logikę biznesową od interfejsu użytkownika.
 - **Usługi**: `DialogService`, `WebServiceClient`, `TireRepository` obsługują logikę komunikacji i zarządzania danymi.
-- **Widoki**: `MainWindow`, `GeneralView`, `AddTireDialog`, `EditTireDialog` itp.
+- **Widoki**: `GeneralView`, `LoginView`.
 - **ViewModel**: `GeneralViewModel`, `AddTireDialogViewModel`, `EditTireDialogViewModel` itp.
 - **Modele**: `TireModel`, `ErrorResponse` itp.
 - **Konwertery**: `BooleanToVisibilityConverter`, `TireTypeToLocalizedStringConverter`, `WeekYearToDateConverter`.
@@ -54,7 +54,7 @@ W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
 ### Wyszukiwanie opon
 1. Wprowadź rozmiar opony w polu wyszukiwania.
 2. Wybierz typ opony z listy rozwijanej.
-3. Kliknij "Szukaj", aby wyświetlić wyniki.
+3. Kliknij "Szukaj", aby wyświetlić wyniki (rozmiar sie podaje w stylu 185/55 R16).
 
 ## Autorzy
 - [Aleksander Żak]
