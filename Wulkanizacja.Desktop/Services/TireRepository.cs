@@ -12,7 +12,7 @@ using Wulkanizacja.Desktop.Models;
 
 namespace Wulkanizacja.Desktop.Services
 {
-    public class TireRepository
+    public class TireRepository : IDisposable
     {
         private readonly WebServiceClient _client;
         private readonly TireTypeToLocalizedStringConverter _tireTypeConverter;
@@ -115,6 +115,11 @@ namespace Wulkanizacja.Desktop.Services
                 await DialogService.ShowErrorDialogAsync("Błąd", "Błąd serwera");
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
             }
+        }
+
+        public void Dispose()
+        {
+            _client?.Dispose();
         }
     }
 }

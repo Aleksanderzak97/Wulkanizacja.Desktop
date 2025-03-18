@@ -9,6 +9,7 @@ using Wulkanizacja.Desktop.Services;
 using Wulkanizacja.Desktop.Views;
 using Wulkanizacja.User.Services;
 using Wulkanizacja.User.ViewModels;
+using Microsoft.Extensions.Configuration;
 
 namespace Wulkanizacja.User;
 
@@ -19,10 +20,15 @@ public partial class App : Application
 {
     public new static App Current => (App)Application.Current;
     public ServiceProvider ServiceProvider { get; private set; }
+    public IConfiguration Configuration { get; private set; }
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        var builder = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+        Configuration = builder.Build();
         SwitchToDarkTheme();
         //pobieranie jezyka z systemu
         var systemLanguage = CultureInfo.InstalledUICulture.Name; 
@@ -40,6 +46,10 @@ public partial class App : Application
 
     private void ConfigureServices(ServiceCollection services)
     {
+        services.AddSingleton<TokenService>();
+
+        services.AddSingleton(Configuration);
+
         services.AddSingleton<BusyIndicatorService>();
         services.AddSingleton<BusyIndicator>();
         services.AddSingleton<MainWindow>();
@@ -51,22 +61,43 @@ public partial class App : Application
 
         services.AddSingleton<INavigationService, NavigationService>();
 
-        services.AddSingleton<HttpClient>(provider =>
-        {
-            var handler = new HttpClientHandler
+        services.AddHttpClient("UserClient")
+            .ConfigureHttpClient((sp, client) =>
             {
-                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
-            };
+                var config = sp.GetRequiredService<IConfiguration>();
+                client.BaseAddress = new Uri(config["ServiceUrls:Wulkanizacja.Auth"]);
+            });
 
-            var client = new HttpClient
+        services.AddHttpClient("TireClient")
+            .ConfigureHttpClient((sp, client) =>
             {
-                BaseAddress = new Uri("http://localhost:5884")
-            };
-            return client;
+                var config = sp.GetRequiredService<IConfiguration>();
+                client.BaseAddress = new Uri(config["ServiceUrls:Wulkanizacja.Service"]);
+            });
+
+        services.AddTransient<UserRepository>(sp =>
+        {
+            var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = clientFactory.CreateClient("UserClient");
+            var tokenService = sp.GetRequiredService<TokenService>();
+            return new UserRepository(new WebServiceClient(httpClient, tokenService));
         });
 
-        services.AddSingleton<WebServiceClient>();
-        services.AddSingleton<TireRepository>();
+        services.AddTransient<TireRepository>(sp =>
+        {
+            var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = clientFactory.CreateClient("TireClient");
+            var tokenService = sp.GetRequiredService<TokenService>();
+            return new TireRepository(new WebServiceClient(httpClient, tokenService));
+        });
+
+        services.AddTransient<WebServiceClient>(sp =>
+        {
+            var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = clientFactory.CreateClient("TireClient");
+            var tokenService = sp.GetRequiredService<TokenService>();
+            return new WebServiceClient(httpClient, tokenService);
+        });
 
     }
 
