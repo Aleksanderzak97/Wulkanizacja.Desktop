@@ -19,6 +19,7 @@ namespace Wulkanizacja.Desktop.Services
         private static Window _owner;
         private static bool _errorResult;
         private static TireModel tireModel;
+        private static RegisterModel registerModel;
 
         public static void SetOwner(Window owner)
     => _owner = owner;
@@ -190,6 +191,41 @@ namespace Wulkanizacja.Desktop.Services
                     return null;
                 });
                 return tireModel;
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception);
+                throw;
+            }
+        }
+
+        public static async Task<RegisterModel> ShowUserRegisterDialogAsync(string title, string? okButtonText = "Zarejestruj", string? nokButtonText = "Anuluj")
+        {
+            try
+            {
+                var result = await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    var dialog = new UserRegisterDialog();
+                    dialog.Title.Text = title.ToUpper();
+                    dialog.RegisterButton.Content = okButtonText;
+                    dialog.Owner = _owner;
+                    var dialogResult = dialog.ShowDialog() == true;
+                    if (dialogResult)
+                    {
+                        var vm = dialog.ViewModel;
+                        registerModel = new RegisterModel()
+                        {
+                            Name = vm.Name,
+                            LastName = vm.LastName,
+                            Username = vm.Username,
+                            Password = vm.Password,
+                            Email = vm.Email
+                        };
+                        return registerModel;
+                    }
+                    return null;
+                });
+                return registerModel;
             }
             catch (Exception exception)
             {
