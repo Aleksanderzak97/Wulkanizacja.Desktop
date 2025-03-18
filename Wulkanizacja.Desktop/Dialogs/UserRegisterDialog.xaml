@@ -1,0 +1,128 @@
+﻿<Window x:Class="Wulkanizacja.Desktop.Dialogs.UserRegisterDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Wulkanizacja.Desktop.Dialogs"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Style="{StaticResource {x:Type Window}}"
+        Title="Rejestracja" Height="450" Width="800">
+    <Grid Margin="25">
+        <!-- Główne wiersze: tytuł (auto), środkowy (rozciągliwy), przyciski (auto) -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Tytuł okna -->
+        <TextBlock x:Name="Title"
+                Grid.Row="0"
+                FontSize="28"
+                FontWeight="Bold"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0,0,0,10"
+                TextWrapping="Wrap"
+                Text="Rejestracja"/>
+
+        <!-- Główna część formularza w ScrollViewer, by zachować przewijanie przy małych ekranach -->
+        <ScrollViewer Grid.Row="1"
+                   VerticalAlignment="Stretch"
+                   BorderBrush="Transparent"
+                   HorizontalScrollBarVisibility="Disabled"
+                   VerticalScrollBarVisibility="Auto">
+
+            <!-- Grid z dwiema kolumnami: lewa na etykiety, prawa na pola -->
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <!-- Każdy wiersz na kolejne pole -->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- 1. Imie -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 2. Nazwisko -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 3. Login -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 4. Hasło -->
+                    <RowDefinition Height="Auto"/>
+                    <!-- 5. Adres email -->
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- 1. Imie -->
+                <Label Grid.Row="0" Grid.Column="0"
+                    Content="Imię"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <TextBox x:Name="NameTextBox"
+                      Grid.Row="0" Grid.Column="1"
+                      Margin="5"
+                      Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 2. Nazwisko -->
+                <Label Grid.Row="1" Grid.Column="0"
+                    Content="Nazwisko"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <TextBox x:Name="LastNameTextBox"
+                      Grid.Row="1" Grid.Column="1"
+                      Margin="5"
+                      Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 3. Login -->
+                <Label Grid.Row="2" Grid.Column="0"
+                    Content="Login"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <TextBox x:Name="UsernameTextBox"
+                      Grid.Row="2" Grid.Column="1"
+                      Margin="5"
+                      Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <!-- 4. Hasło -->
+                <Label Grid.Row="3" Grid.Column="0"
+                    Content="Hasło"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <PasswordBox x:Name="PasswordTextBox"
+                      Grid.Row="3" Grid.Column="1"
+                      Margin="5"
+                      PasswordChanged="PasswordTextBox_PasswordChanged"
+                   />
+
+                <!-- 5. Adres email -->
+                <Label Grid.Row="4" Grid.Column="0"
+                    Content="Adres email"
+                    VerticalAlignment="Center"
+                    Margin="5"/>
+                <TextBox x:Name="EmailTextBox"
+                      Grid.Row="4" Grid.Column="1"
+                      Margin="5"
+                      Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}"/>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Przyciski na dole -->
+        <StackPanel Grid.Row="2"
+                 Orientation="Horizontal"
+                 HorizontalAlignment="Center"
+                 Margin="10">
+            <Button x:Name="RegisterButton"
+                 Width="100"
+                 Margin="5"
+                 Content="Zarejestruj"
+                 Click="RegisterButton_OnClick" />
+            <Button x:Name="CancelButton"
+                 Width="100"
+                 Margin="5"
+                 Content="Anuluj"
+                 Click="CancelButton_OnClick" />
+        </StackPanel>
+    </Grid>
+</Window>

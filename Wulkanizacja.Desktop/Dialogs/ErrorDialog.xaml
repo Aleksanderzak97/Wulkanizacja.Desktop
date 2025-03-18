@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterOwner"
         Style="{StaticResource {x:Type Window}}"
-        Title="ErrorDialog" Height="450" Width="800">
+        Title="Błąd" Height="450" Width="800">
     <Grid Margin="25">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

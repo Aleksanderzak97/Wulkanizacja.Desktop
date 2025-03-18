@@ -8,11 +8,13 @@ using Wulkanizacja.Desktop.Dictionary;
 using Wulkanizacja.Desktop.Enums;
 using Wulkanizacja.Desktop.Models;
 using Wulkanizacja.Desktop.Services;
+using Wulkanizacja.User.Services;
 
 namespace Wulkanizacja.User.ViewModels
 {
     public class GeneralViewModel : INotifyPropertyChanged
     {
+        private readonly INavigationService _navigationService;
         private readonly WebServiceClient _webServiceClient;
         private readonly TireRepository _tireRepository;
         private ObservableCollection<TireModel> _tireModels;
@@ -83,9 +85,11 @@ namespace Wulkanizacja.User.ViewModels
         public ICommand SearchCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand LogoutCommand { get; }
 
-        public GeneralViewModel(WebServiceClient webServiceClient, TireRepository tireRepository)
+        public GeneralViewModel(INavigationService navigationService, WebServiceClient webServiceClient, TireRepository tireRepository)
         {
+            _navigationService = navigationService;
             _webServiceClient = webServiceClient;
             _tireRepository = tireRepository;
 
@@ -98,6 +102,7 @@ namespace Wulkanizacja.User.ViewModels
             SearchCommand = new RelayCommand(Search);
             EditCommand = new RelayCommand(Edit);
             DeleteCommand = new RelayCommand(Delete);
+            LogoutCommand = new RelayCommand(Logout);
         }
         private string TranslateTireType(TireType tireType)
         {
@@ -186,18 +191,42 @@ namespace Wulkanizacja.User.ViewModels
                 var Question = await DialogService.ShowQuestionDialogAsync("Pytanie", "Czy na pewno chcesz usunąć oponę?");
                 if (Question)
                 {
-                BusyIndicatorService.Instance.IsBusy = true;
-                var Guid = tireModel.Id;
-                var delete = await _tireRepository.DeleteTireAsync(Guid);
+                    BusyIndicatorService.Instance.IsBusy = true;
+                    var Guid = tireModel.Id;
+                    var delete = await _tireRepository.DeleteTireAsync(Guid);
                     if (delete.IsSuccessStatusCode)
                     {
                         TireModels.Remove(tireModel);
-                            await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została usunięta pomyślnie");
-                            BusyIndicatorService.Instance.IsBusy = false;
+                        await DialogService.ShowSuccesDialogAsync("Sukces", "Opona została usunięta pomyślnie");
+                        BusyIndicatorService.Instance.IsBusy = false;
                     }
                 }
                 BusyIndicatorService.Instance.IsBusy = false;
             }
+        }
+
+
+        private async void Logout(object parameter)
+        {
+            if (parameter is GeneralViewModel viewModel)
+            {
+                var Question = await DialogService.ShowQuestionDialogAsync("Pytanie", "Czy chcesz sie wylogować?");
+                if (Question)
+                {
+                    BusyIndicatorService.Instance.IsBusy = true;
+                    DisposeResources();
+
+                    _navigationService.NavigateTo("Login");
+                    BusyIndicatorService.Instance.IsBusy = false;
+                }
+                BusyIndicatorService.Instance.IsBusy = false;
+            }
+        }
+
+        private void DisposeResources()
+        {
+            _webServiceClient?.Dispose();
+            _tireRepository?.Dispose();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
