@@ -4,6 +4,8 @@
 Wulkanizacja Desktop to aplikacja WPF stworzona w .NET 8, która umożliwia zarządzanie oponami w warsztacie wulkanizacyjnym. Aplikacja pozwala na dodawanie, edytowanie, usuwanie oraz wyszukiwanie opon.
 
 ## Funkcje
+- Rejestracja użytkownika
+- Logowanie
 - Dodawanie nowych opon
 - Edytowanie istniejących opon
 - Usuwanie opon
@@ -17,13 +19,15 @@ Wulkanizacja Desktop to aplikacja WPF stworzona w .NET 8, która umożliwia zarz
 - Visual Studio 2022 lub inne
 
 ## Konfiguracja
-W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
-
-            var client = new HttpClient
-            {
-                BaseAddress = new Uri("http://localhost:5884")
-            };
-
+W appsettings.json ustawiamy odpowiedni adres dla Wulkanizacja.Service oraz Wulkanizacja.Auth
+```json
+{
+  "ServiceUrls": {
+    "Wulkanizacja.Service": "http://localhost:5884",
+    "Wulkanizacja.Auth": "http://localhost:5020"
+  }
+}
+```
 
 ## Uruchomienie
 1. Sklonuj repozytorium.
@@ -32,10 +36,12 @@ W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
 4. Uruchom aplikację.
 
 ## Użycie
-1. Uruchom Wulkanizacja.Service.
-1. Uruchom aplikację.
-2. Kliknij zaloguj (logowanie jest poglądowe narazie nic tam nie ma).
-3. W kolejnym okienku masz przyciski Dodaj, edytuj, usuwaj i wyszukuj opony według potrzeb (rozmiar sie podaje w stylu 185/55 R16).
+1. Uruchom Wulkanizacja.Service
+2. Uruchom Wulkanizacja.Auth
+3. Uruchom aplikację
+4. Zarejestruj swojego użytkownika wymaganie na hasło to 1 znak specjalny i duża litera oraz @ w emailu
+5. Zaloguj się wcześniej utworzonym użytkownikiem
+6. W kolejnym okienku masz przyciski Dodaj, edytuj, usuwaj i wyszukuj opony według potrzeb (rozmiar sie podaje w stylu 185/55 R16).
 
 ## Architektura
 - **MVVM (Model-View-ViewModel)**: Aplikacja korzysta z wzorca MVVM, aby oddzielić logikę biznesową od interfejsu użytkownika.
@@ -46,6 +52,11 @@ W App.xaml.cs ustawiamy odpowiedni adres Wulkanizacja.Service
 - **Konwertery**: `BooleanToVisibilityConverter`, `TireTypeToLocalizedStringConverter`, `WeekYearToDateConverter`.
 
 ## Przykłady
+### Rejestracja użytkownika
+1. Kliknij przycisk "Zarejestruj".
+2. Wypełnij formularz rejestracji.
+3. Kliknij "Zarejestruj", aby zarejestrować nowego użytkownika.
+
 ### Dodawanie nowej opony
 1. Kliknij przycisk "Dodaj".
 2. Wypełnij formularz dodawania opony.
