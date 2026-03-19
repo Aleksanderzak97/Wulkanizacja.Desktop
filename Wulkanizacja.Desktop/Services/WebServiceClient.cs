@@ -1,10 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Wulkanizacja.Desktop.Exceptions;
@@ -12,10 +8,11 @@ using Wulkanizacja.Desktop.Models;
 
 namespace Wulkanizacja.Desktop.Services
 {
-    public class WebServiceClient : IDisposable
+    public class WebServiceClient
     {
         private readonly HttpClient _client;
         private readonly TokenService _tokenService;
+        private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
 
         public WebServiceClient(HttpClient client, TokenService tokenService)
         {
@@ -37,42 +34,25 @@ namespace Wulkanizacja.Desktop.Services
         {
             AddAuthorizationHeader();
             var response = await _client.GetAsync(endpoint);
-                var content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                }
-                else
-                {
-                    ErrorResponse error = null;
-                    try
-                    {
-                        error = JsonSerializer.Deserialize<ErrorResponse>(content);
-                    }
-                    catch
-                    {
-                        throw;
-                    }
+            if (response.IsSuccessStatusCode)
+            {
+                return JsonSerializer.Deserialize<T>(content, JsonOptions);
+            }
 
-                    string errorMessage = error != null
-                        ? $"{error.Reason}"
-                        : $"Error: {response.StatusCode}, Content: {content}";
-
-                    throw new ApiResponseException(errorMessage);
-                }
+            throw CreateApiResponseException(response, content);
         }
 
         public async Task<HttpResponseMessage> PostDataAsync<TRequest>(string endpoint, TRequest data)
         {
             AddAuthorizationHeader();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var response = await _client.PostAsJsonAsync(endpoint, data, options);
+            var response = await _client.PostAsJsonAsync(endpoint, data, JsonOptions);
             var content = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(content, options);
+                var tokenResponse = JsonSerializer.Deserialize<TokenResponse>(content, JsonOptions);
                 if (tokenResponse != null && !string.IsNullOrEmpty(tokenResponse.Token))
                 {
                     _tokenService.SetToken(tokenResponse.Token);
@@ -80,24 +60,8 @@ namespace Wulkanizacja.Desktop.Services
 
                 return response;
             }
-            else
-            {
-                ErrorResponse error = null;
-                try
-                {
-                    error = JsonSerializer.Deserialize<ErrorResponse>(content, options);
-                }
-                catch
-                {
-                    throw;
-                }
 
-                string errorMessage = error != null
-                    ? $"{error.Reason}"
-                    : $"Error: {response.StatusCode}, Content: {content}";
-
-                throw new ApiResponseException(errorMessage);
-            }
+            throw CreateApiResponseException(response, content);
         }
 
 
@@ -105,38 +69,20 @@ namespace Wulkanizacja.Desktop.Services
         public async Task<HttpResponseMessage> PutDataAsync<T>(string endpoint, T data)
         {
             AddAuthorizationHeader();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            var response = await _client.PutAsJsonAsync(endpoint, data, options);
+            var response = await _client.PutAsJsonAsync(endpoint, data, JsonOptions);
             var content = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
                 return response;
             }
-            else
-            {
-                ErrorResponse error = null;
-                try
-                {
-                    error = JsonSerializer.Deserialize<ErrorResponse>(content, options);
-                }
-                catch
-                {
-                    throw;
-                }
 
-                string errorMessage = error != null
-                    ? $"{error.Reason}"
-                    : $"Error: {response.StatusCode}, Content: {content}";
-
-                throw new ApiResponseException(errorMessage);
-            }
+            throw CreateApiResponseException(response, content);
         }
 
         public async Task<HttpResponseMessage> DeleteDataAsync(string endpoint)
         {
             AddAuthorizationHeader();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var response = await _client.DeleteAsync(endpoint);
             var content = await response.Content.ReadAsStringAsync();
 
@@ -144,29 +90,30 @@ namespace Wulkanizacja.Desktop.Services
             {
                 return response;
             }
-            else
+
+            throw CreateApiResponseException(response, content);
+        }
+
+        private static ApiResponseException CreateApiResponseException(HttpResponseMessage response, string content)
+        {
+            ErrorResponse? error = null;
+            if (!string.IsNullOrWhiteSpace(content))
             {
-                ErrorResponse error = null;
                 try
                 {
-                    error = JsonSerializer.Deserialize<ErrorResponse>(content, options);
+                    error = JsonSerializer.Deserialize<ErrorResponse>(content, JsonOptions);
                 }
                 catch
                 {
-                    throw;
+                    // fallback below
                 }
-
-                string errorMessage = error != null
-                    ? $"{error.Reason}"
-                    : $"Error: {response.StatusCode}, Content: {content}";
-
-                throw new ApiResponseException(errorMessage);
             }
-        }
 
-        public void Dispose()
-        {
-            _client?.Dispose();
+            var errorMessage = !string.IsNullOrWhiteSpace(error?.Reason)
+                ? error.Reason
+                : $"Error: {response.StatusCode}, Content: {content}";
+
+            return new ApiResponseException(errorMessage);
         }
     }
 }

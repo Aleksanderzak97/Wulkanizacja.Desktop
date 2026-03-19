@@ -12,7 +12,7 @@ using Wulkanizacja.Desktop.Models;
 
 namespace Wulkanizacja.Desktop.Services
 {
-    public class TireRepository : IDisposable
+    public class TireRepository
     {
         private readonly WebServiceClient _client;
         private readonly TireTypeToLocalizedStringConverter _tireTypeConverter;
@@ -51,7 +51,7 @@ namespace Wulkanizacja.Desktop.Services
         {
             try
             {
-            return await _client.PutDataAsync($"tires/updateTire/{TireId}", tireModel);
+                return await _client.PutDataAsync($"tires/updateTire/{TireId}", tireModel);
             }
             catch (ApiResponseException ex)
             {
@@ -98,7 +98,7 @@ namespace Wulkanizacja.Desktop.Services
         {
             try
             {
-            return await _client.DeleteDataAsync($"tires/{guid}/removeTire");
+                return await _client.DeleteDataAsync($"tires/{guid}/removeTire");
             }
             catch (ApiResponseException ex)
             {
@@ -117,9 +117,5 @@ namespace Wulkanizacja.Desktop.Services
             }
         }
 
-        public void Dispose()
-        {
-            _client?.Dispose();
-        }
     }
 }

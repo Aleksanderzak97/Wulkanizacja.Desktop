@@ -31,7 +31,7 @@ public partial class App : Application
         Configuration = builder.Build();
         SwitchToDarkTheme();
         //pobieranie jezyka z systemu
-        var systemLanguage = CultureInfo.InstalledUICulture.Name; 
+        var systemLanguage = CultureInfo.InstalledUICulture.Name;
         var culture = new CultureInfo(systemLanguage);
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
@@ -89,14 +89,6 @@ public partial class App : Application
             var httpClient = clientFactory.CreateClient("TireClient");
             var tokenService = sp.GetRequiredService<TokenService>();
             return new TireRepository(new WebServiceClient(httpClient, tokenService));
-        });
-
-        services.AddTransient<WebServiceClient>(sp =>
-        {
-            var clientFactory = sp.GetRequiredService<IHttpClientFactory>();
-            var httpClient = clientFactory.CreateClient("TireClient");
-            var tokenService = sp.GetRequiredService<TokenService>();
-            return new WebServiceClient(httpClient, tokenService);
         });
 
     }

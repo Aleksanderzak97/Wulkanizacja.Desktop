@@ -45,6 +45,7 @@ namespace Wulkanizacja.User.ViewModels
         public LoginViewModel(INavigationService navigationService, UserRepository userRepository)
         {
             _userRepository = userRepository;
+            _registerModels = new ObservableCollection<RegisterModel>();
 
             _navigationService = navigationService;
             LoginCommand = new RelayCommand(ExecuteLogin);
@@ -53,41 +54,46 @@ namespace Wulkanizacja.User.ViewModels
 
         private async void ExecuteLogin(object parameter)
         {
-            if (parameter is LoginViewModel viewModel)
+            var loginModel = new LoginModel { Username = Username, Password = Password };
+            if (string.IsNullOrEmpty(loginModel.Username) || string.IsNullOrEmpty(loginModel.Password))
             {
-                var loginModel = new LoginModel { Username = viewModel.Username, Password = viewModel.Password};
-                if(string.IsNullOrEmpty(loginModel.Username) || string.IsNullOrEmpty(loginModel.Password))
-                {
-                    await DialogService.ShowErrorDialogAsync("Błąd", "Wprowadź poprawne dane logowania");
-                    return;
-                }
-                BusyIndicatorService.Instance.IsBusy = true;
+                await DialogService.ShowErrorDialogAsync("Błąd", "Wprowadź poprawne dane logowania");
+                return;
+            }
+
+            BusyIndicatorService.Instance.IsBusy = true;
+            try
+            {
                 var loginUser = await _userRepository.LoginUserAsync(loginModel);
                 if (loginUser.IsSuccessStatusCode)
                 {
                     await DialogService.ShowSuccesDialogAsync("Sukces", "Zalogowano użytkownika");
-                    BusyIndicatorService.Instance.IsBusy = false;
                     _navigationService.NavigateTo("General");
                 }
+            }
+            finally
+            {
                 BusyIndicatorService.Instance.IsBusy = false;
             }
         }
 
         private async void Register(object parameter)
         {
-            if (parameter is LoginViewModel viewModel)
+            var registerUser = await DialogService.ShowUserRegisterDialogAsync("Rejestracja");
+            if (registerUser != null)
             {
-                var registerUser = await DialogService.ShowUserRegisterDialogAsync("Rejestracja");
-                if (registerUser != null)
+                BusyIndicatorService.Instance.IsBusy = true;
+                try
                 {
-                    BusyIndicatorService.Instance.IsBusy = true;
                     var add = await _userRepository.RegisterUserAsync(registerUser);
                     if (add.IsSuccessStatusCode)
                     {
                         _registerModels.Add(registerUser);
                         await DialogService.ShowSuccesDialogAsync("Sukces", "Zarejestrowano użytkownika");
-                        BusyIndicatorService.Instance.IsBusy = false;
                     }
+                }
+                finally
+                {
                     BusyIndicatorService.Instance.IsBusy = false;
                 }
             }

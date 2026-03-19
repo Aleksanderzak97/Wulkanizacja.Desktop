@@ -15,7 +15,6 @@ namespace Wulkanizacja.User.ViewModels
     public class GeneralViewModel : INotifyPropertyChanged
     {
         private readonly INavigationService _navigationService;
-        private readonly WebServiceClient _webServiceClient;
         private readonly TireRepository _tireRepository;
         private ObservableCollection<TireModel> _tireModels;
         private string _size;
@@ -87,10 +86,9 @@ namespace Wulkanizacja.User.ViewModels
         public ICommand DeleteCommand { get; }
         public ICommand LogoutCommand { get; }
 
-        public GeneralViewModel(INavigationService navigationService, WebServiceClient webServiceClient, TireRepository tireRepository)
+        public GeneralViewModel(INavigationService navigationService, TireRepository tireRepository)
         {
             _navigationService = navigationService;
-            _webServiceClient = webServiceClient;
             _tireRepository = tireRepository;
 
             TireModels = new ObservableCollection<TireModel>();
@@ -132,7 +130,6 @@ namespace Wulkanizacja.User.ViewModels
                     Size = viewModel.Size,
                     Type = (int)viewModel.SelectedTireType
                 };
-                var encodedSize = Uri.EscapeDataString(searchParameters.Size);
                 var data = await _tireRepository.GetTireAsync(searchParameters.Size, (TireType)searchParameters.Type);
                 if (data != null)
                     TireModels = new ObservableCollection<TireModel>(data);
@@ -145,7 +142,7 @@ namespace Wulkanizacja.User.ViewModels
             if (parameter is GeneralViewModel viewModel)
             {
                 var addTire = await DialogService.ShowAddDialogAsync("Dodawanie Opony");
-                if(addTire != null)
+                if (addTire != null)
                 {
                     BusyIndicatorService.Instance.IsBusy = true;
                     var add = await _tireRepository.AddTireAsync(addTire);
@@ -192,8 +189,8 @@ namespace Wulkanizacja.User.ViewModels
                 if (Question)
                 {
                     BusyIndicatorService.Instance.IsBusy = true;
-                    var Guid = tireModel.Id;
-                    var delete = await _tireRepository.DeleteTireAsync(Guid);
+                    var tireId = tireModel.Id;
+                    var delete = await _tireRepository.DeleteTireAsync(tireId);
                     if (delete.IsSuccessStatusCode)
                     {
                         TireModels.Remove(tireModel);
@@ -214,19 +211,11 @@ namespace Wulkanizacja.User.ViewModels
                 if (Question)
                 {
                     BusyIndicatorService.Instance.IsBusy = true;
-                    DisposeResources();
-
                     _navigationService.NavigateTo("Login");
                     BusyIndicatorService.Instance.IsBusy = false;
                 }
                 BusyIndicatorService.Instance.IsBusy = false;
             }
-        }
-
-        private void DisposeResources()
-        {
-            _webServiceClient?.Dispose();
-            _tireRepository?.Dispose();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
